@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -50,12 +51,16 @@ public class EmitActivity extends AppCompatActivity {
     String shared_key,phone;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private DatabaseReference mRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        mRef = FirebaseDatabase.getInstance().getReference();
+
         shared_key = sharedPreferences.getString("sharedkey",null);
         phone = sharedPreferences.getString("phone",null);
         setContentView(R.layout.activity_emit);
@@ -85,7 +90,6 @@ public class EmitActivity extends AppCompatActivity {
                                         imageView.setAnimation(animation);
                                         imageView.setClickable(false);
                                         textView.setText("Sending Audio...");
-
                                         sendChirp();
                                     }catch (JSONException e)
                                     {
@@ -220,7 +224,14 @@ public class EmitActivity extends AppCompatActivity {
             @Override
             public void onChirpError(ChirpError chirpError) {
                 Log.d("ChirpError",chirpError.toString());
-                imageView.setVisibility(View.VISIBLE);
+                Log.d("ChirpError",chirpError.getMessage());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setVisibility(View.VISIBLE);
+                    }
+                });
+                Toast.makeText(getApplicationContext(),"QR Error",Toast.LENGTH_LONG).show();
             }
         });
         chirpSDK.start();
