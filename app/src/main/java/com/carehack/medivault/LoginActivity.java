@@ -24,9 +24,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -62,16 +64,8 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         if (sharedPreferences.contains("uid")) {
-            if(sharedPreferences.contains("address")) {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
-            }
-            else
-            {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                finish();
-            }
-            return;
+            String role = sharedPreferences.getString("role",null);
+            startActivityBasedOnRole(role);
         }
         setContentView(R.layout.activity_login);
         mPhoneView = findViewById(R.id.edit_text_phone_number);
@@ -229,14 +223,32 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.d(TAG, "signInWithCredential:success");
                                 final FirebaseUser user = task.getResult().getUser();
                                 mRef = FirebaseDatabase.getInstance().getReference();
-                                mRef.child("Users").child(user.getPhoneNumber()).child("UID").setValue(user.getUid(), new DatabaseReference.CompletionListener() {
+                                mRef.child("Users").child(user.getPhoneNumber()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onComplete(DatabaseError
-                                                                   databaseError, DatabaseReference databaseReference) {
+                                    public void onDataChange(final DataSnapshot dataSnapshot) {
+                                        final String role = dataSnapshot.child("Role").getValue(String.class);
                                         editor.putString("phone", user.getPhoneNumber());
                                         editor.putString("uid", user.getUid());
+                                        editor.putString("role", role);
                                         editor.commit();
-                                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                                        if(!dataSnapshot.hasChild("UID")) {
+                                            mRef.child("Users").child(user.getPhoneNumber()).child("UID").setValue(user.getUid(), new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(DatabaseError
+                                                                               databaseError, DatabaseReference databaseReference) {
+                                                    startActivityBasedOnRole(role);
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            startActivityBasedOnRole(role);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
                                     }
                                 });
 
@@ -250,6 +262,24 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                     });
+    }
+
+    private void startActivityBasedOnRole(String role) {
+        if(role!=null)
+        {
+            if(role.equals("Doctor"))
+                startActivity(new Intent(LoginActivity.this,DoctorMainActivity.class));
+            else if(role.equals("User")) {
+                if(sharedPreferences.contains("address")) {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                }
+                else {
+                    startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                }
+            }
+        }
+
     }
 
     private boolean isPhoneValid(String phone) {

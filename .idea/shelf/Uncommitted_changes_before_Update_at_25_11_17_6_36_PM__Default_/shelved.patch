@@ -1,0 +1,697 @@
+Index: app/src/main/java/com/carehack/medivault/ListenActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/carehack/medivault/ListenActivity.java	(revision )
++++ app/src/main/java/com/carehack/medivault/ListenActivity.java	(revision )
+@@ -0,0 +1,159 @@
++package com.carehack.medivault;
++
++import android.content.pm.PackageManager;
++import android.support.v4.content.ContextCompat;
++import android.support.v7.app.AppCompatActivity;
++import android.os.Bundle;
++import android.util.Log;
++import android.view.View;
++import android.widget.ImageView;
++import android.widget.ProgressBar;
++import android.widget.TextView;
++import android.widget.Toast;
++
++import com.karumi.dexter.Dexter;
++import com.karumi.dexter.MultiplePermissionsReport;
++import com.karumi.dexter.PermissionToken;
++import com.karumi.dexter.listener.PermissionDeniedResponse;
++import com.karumi.dexter.listener.PermissionGrantedResponse;
++import com.karumi.dexter.listener.PermissionRequest;
++import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
++import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
++import com.karumi.dexter.listener.single.PermissionListener;
++import com.wang.avi.AVLoadingIndicatorView;
++
++import org.json.JSONException;
++
++import java.util.List;
++
++import io.chirp.sdk.CallbackRead;
++import io.chirp.sdk.ChirpSDK;
++import io.chirp.sdk.ChirpSDKListener;
++import io.chirp.sdk.ChirpSDKStatusListener;
++import io.chirp.sdk.model.Chirp;
++import io.chirp.sdk.model.ChirpError;
++
++public class ListenActivity extends AppCompatActivity {
++    ChirpSDK chirpSDK;
++    AVLoadingIndicatorView avLoadingIndicatorView;
++    ProgressBar progressBar;
++    ImageView imageView;
++    TextView textView;
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_listen);
++        avLoadingIndicatorView = findViewById(R.id.avi);
++        progressBar = findViewById(R.id.progressbar);
++        textView = findViewById(R.id.textview);
++        imageView = findViewById(R.id.imageView);
++        chirpSDK = new ChirpSDK(getApplicationContext(), getResources().getString(R.string.chirp_app_key), getResources().getString(R.string.chirp_app_secret), new ChirpSDKStatusListener() {
++            @Override
++            public void onAuthenticationSuccess() {
++                Dexter.withActivity(ListenActivity.this)
++                        .withPermission(
++                                android.Manifest.permission.RECORD_AUDIO
++                        ).withListener(new PermissionListener() {
++                    @Override
++                    public void onPermissionGranted(PermissionGrantedResponse response) {
++                        progressBar.setVisibility(View.GONE);
++                        imageView.setVisibility(View.VISIBLE);
++                        textView.setText("Click on the button below to start recording");
++                        imageView.setOnClickListener(new View.OnClickListener() {
++                            @Override
++                            public void onClick(View v) {
++                                imageView.setVisibility(View.GONE);
++                                textView.setText("Recording Audio...");
++                                avLoadingIndicatorView.setVisibility(View.VISIBLE);
++                                recordChirp();
++                            }
++                        });
++                    }
++
++                    @Override
++                    public void onPermissionDenied(PermissionDeniedResponse response) {
++                        PermissionListener dialogPermissionListener =
++                                DialogOnDeniedPermissionListener.Builder
++                                        .withContext(ListenActivity.this)
++                                        .withTitle("Record permission")
++                                        .withMessage("Record permission is needed to authenticate using AudioQR")
++                                        .withButtonText(android.R.string.ok)
++                                        .withIcon(R.mipmap.ic_launcher)
++                                        .build();
++                    }
++
++                    @Override
++                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
++
++                    }
++                }).check();
++            }
++
++            @Override
++            public void onChirpError(ChirpError chirpError) {
++
++            }
++        });
++    }
++
++
++
++    @Override
++    protected void onPause() {
++        super.onPause();
++        chirpSDK.stop();
++    }
++
++    private void recordChirp() {
++        chirpSDK.setListener(new ChirpSDKListener() {
++
++            @Override
++            public void onChirpHeard(final Chirp chirp) {
++                chirpSDK.read(chirp, new CallbackRead() {
++                    @Override
++                    public void onReadResponse(final Chirp chirp) {
++                        runOnUiThread(new Runnable() {
++                            @Override
++                            public void run() {
++                                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
++                                final String receivedText;
++                                try {
++                                    receivedText = (String) chirp.getJsonData().get("text");
++                                    Toast.makeText(getApplicationContext(),receivedText,Toast.LENGTH_LONG).show();
++                                } catch (JSONException e) {
++                                    e.printStackTrace();
++                                }
++                            }
++                        });
++                    }
++
++                    @Override
++                    public void onReadError(ChirpError chirpError) {
++
++                    }
++                });
++
++            }
++
++            @Override
++            public void onChirpHearStarted() {
++
++            }
++
++            @Override
++            public void onChirpHearFailed() {
++                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
++                imageView.setVisibility(View.VISIBLE);
++
++            }
++
++            @Override
++            public void onChirpError(ChirpError chirpError) {
++                Log.d("ChirpError",chirpError.toString());
++                imageView.setVisibility(View.VISIBLE);
++                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
++            }
++        });
++        chirpSDK.start();
++    }
++}
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.carehack.medivault\">\n\n    <application\n        android:allowBackup=\"true\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/AppTheme\">\n        <activity android:name=\".LoginActivity\"\n            android:noHistory=\"true\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n        <activity android:name=\".RegisterActivity\"\n            android:noHistory=\"true\"/>\n        <activity android:name=\".MainActivity\"/>\n        <activity android:name=\".DoctorMainActiivty\"></activity>\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/AndroidManifest.xml	(revision )
+@@ -1,7 +1,10 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     package="com.carehack.medivault">
+-
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
++    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
++    <uses-permission android:name="android.permission.INTERNET"/>
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+     <application
+         android:allowBackup="true"
+         android:icon="@mipmap/ic_launcher"
+@@ -9,7 +12,8 @@
+         android:roundIcon="@mipmap/ic_launcher_round"
+         android:supportsRtl="true"
+         android:theme="@style/AppTheme">
+-        <activity android:name=".LoginActivity"
++        <activity
++            android:name=".LoginActivity"
+             android:noHistory="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+@@ -17,10 +21,12 @@
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+         </activity>
+-        <activity android:name=".RegisterActivity"
+-            android:noHistory="true"/>
+-        <activity android:name=".MainActivity"/>
+-        <activity android:name=".DoctorMainActiivty"></activity>
++        <activity
++            android:name=".RegisterActivity"
++            android:noHistory="true" />
++        <activity android:name=".MainActivity" />
++        <activity android:name=".DoctorMainActivity" />
++        <activity android:name=".ListenActivity"></activity>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: app/src/main/java/com/carehack/medivault/DoctorMainActiivty.java
+===================================================================
+--- app/src/main/java/com/carehack/medivault/DoctorMainActiivty.java	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/java/com/carehack/medivault/DoctorMainActiivty.java	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
+@@ -1,13 +0,0 @@
+-package com.carehack.medivault;
+-
+-import android.support.v7.app.AppCompatActivity;
+-import android.os.Bundle;
+-
+-public class DoctorMainActiivty extends AppCompatActivity {
+-
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        setContentView(R.layout.activity_doctor_main);
+-    }
+-}
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\n\nandroid {\n    compileSdkVersion 26\n    defaultConfig {\n        applicationId \"com.carehack.medivault\"\n        minSdkVersion 15\n        targetSdkVersion 26\n        versionCode 1\n        versionName \"1.0\"\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n}\n\nrepositories {\n    mavenCentral()\n    jcenter()\n    maven { url \"https://jitpack.io\" }\n}\n\ndependencies {\n    implementation fileTree(dir: 'libs', include: ['*.jar'])\n    implementation 'com.android.support.constraint:constraint-layout:1.0.2'\n    testImplementation 'junit:junit:4.12'\n    compile 'com.android.support:design:26.1.0'\n\n    androidTestImplementation 'com.android.support.test:runner:1.0.1'\n    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'\n    compile 'com.android.support:design:26.1.0'\n    compile 'com.android.support:cardview-v7:26.1.0'\n    compile 'com.android.support:appcompat-v7:26.1.0'\n    compile 'com.google.firebase:firebase-core:11.6.0'\n    compile 'com.google.firebase:firebase-auth:11.6.0'\n    compile 'com.google.firebase:firebase-database:11.6.0'\n    compile 'com.google.firebase:firebase-storage:11.6.0'\n}\n\napply plugin: 'com.google.gms.google-services'\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/build.gradle	(revision )
+@@ -22,6 +22,10 @@
+     mavenCentral()
+     jcenter()
+     maven { url "https://jitpack.io" }
++    flatDir {
++        dirs 'libs'
++    }
++
+ }
+ 
+ dependencies {
+@@ -39,6 +43,14 @@
+     compile 'com.google.firebase:firebase-auth:11.6.0'
+     compile 'com.google.firebase:firebase-database:11.6.0'
+     compile 'com.google.firebase:firebase-storage:11.6.0'
++    compile 'io.chirp.sdk:chirp-sdk-release:2.5.2@aar'
++    compile 'com.squareup.retrofit2:retrofit:2.3.0'
++    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
++    compile 'joda-time:joda-time:2.3'
++    compile 'com.j256.ormlite:ormlite-core:4.48'
++    compile 'com.j256.ormlite:ormlite-android:4.48'
++    compile 'com.karumi:dexter:4.2.0'
++    compile 'com.wang.avi:library:2.1.3'
+ }
+ 
+ apply plugin: 'com.google.gms.google-services'
+Index: app/src/main/java/com/carehack/medivault/LoginActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.carehack.medivault;\n\nimport android.app.Dialog;\nimport android.content.Intent;\nimport android.content.SharedPreferences;\nimport android.os.Bundle;\nimport android.support.annotation.NonNull;\nimport android.support.design.widget.TextInputEditText;\nimport android.support.v7.app.AppCompatActivity;\nimport android.text.TextUtils;\nimport android.util.Log;\nimport android.view.View;\nimport android.widget.Button;\nimport android.widget.ProgressBar;\nimport android.widget.TextView;\n\nimport com.google.android.gms.tasks.OnCompleteListener;\nimport com.google.android.gms.tasks.Task;\nimport com.google.firebase.FirebaseException;\nimport com.google.firebase.FirebaseTooManyRequestsException;\nimport com.google.firebase.auth.AuthResult;\nimport com.google.firebase.auth.FirebaseAuth;\nimport com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;\nimport com.google.firebase.auth.FirebaseUser;\nimport com.google.firebase.auth.PhoneAuthCredential;\nimport com.google.firebase.auth.PhoneAuthProvider;\nimport com.google.firebase.database.DatabaseError;\nimport com.google.firebase.database.DatabaseReference;\nimport com.google.firebase.database.FirebaseDatabase;\n\nimport java.util.concurrent.TimeUnit;\nimport java.util.regex.Matcher;\nimport java.util.regex.Pattern;\n\n/**\n * This activity will be the first activity where the\n * user can register his phone number.\n */\npublic class LoginActivity extends AppCompatActivity {\n\n\n    private static final String TAG = \"LoginActivity\";\n    // UI references.\n    private TextInputEditText mPhoneView;\n    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;\n    private PhoneAuthProvider.ForceResendingToken mResendToken;\n    private String mVerificationId, code;\n    private FirebaseAuth mAuth;\n    private DatabaseReference mRef;\n    private SharedPreferences sharedPreferences;\n    private SharedPreferences.Editor editor;\n    private Button mEmailSignInButton;\n    private ProgressBar progressBar;\n    private boolean otpsent = false;\n    private PhoneAuthCredential credential;\n    private TextView textView;\n    private Button btn;\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n\n        super.onCreate(savedInstanceState);\n        sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);\n        editor = sharedPreferences.edit();\n        if (sharedPreferences.contains(\"uid\")) {\n            if(sharedPreferences.contains(\"address\")) {\n                startActivity(new Intent(LoginActivity.this, MainActivity.class));\n                finish();\n            }\n            else\n            {\n                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));\n                finish();\n            }\n            return;\n        }\n        setContentView(R.layout.activity_login);\n        mPhoneView = findViewById(R.id.edit_text_phone_number);\n        mEmailSignInButton = findViewById(R.id.btn_next);\n        textView = findViewById(R.id.textView);\n        progressBar = findViewById(R.id.progressbar);\n        mAuth = FirebaseAuth.getInstance();\n        mRef = FirebaseDatabase.getInstance().getReference();\n        //Go To Booking Activity\n\n        //end-Go To Booking Activity\n        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View view) {\n                if (!otpsent)\n                    createDialog();\n                else\n                    signInWithPhoneAuthCredential(credential);\n            }\n        });\n    }\n\n\n    private void createDialog() {\n        final Dialog dialog = new Dialog(LoginActivity.this);\n        dialog.setContentView(R.layout.dialog_login);\n        dialog.show();\n        TextView phone_text = dialog.findViewById(R.id.phone_textview);\n        phone_text.setText(\"+91 \" + mPhoneView.getText().toString());\n        Button edit = dialog.findViewById(R.id.btn_edit);\n        Button ok = dialog.findViewById(R.id.btn_ok);\n        edit.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                if (dialog.isShowing()) {\n                    dialog.dismiss();\n                }\n            }\n        });\n        ok.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                if (dialog.isShowing()) {\n                    findViewById(R.id.textInputLayout).setVisibility(View.GONE);\n                    dialog.dismiss();\n                    attemptLogin();\n                }\n            }\n        });\n    }\n\n\n    private void attemptLogin() {\n\n        // Reset errors.\n        mPhoneView.setError(null);\n\n        // Store values at the time of the login attempt.\n        String phone = mPhoneView.getText().toString();\n\n        boolean cancel = false;\n        View focusView = null;\n\n\n        // Check for a valid phone\n        if (TextUtils.isEmpty(phone)) {\n            mPhoneView.setError(getString(R.string.error_field_required));\n            focusView = mPhoneView;\n            cancel = true;\n        } else if (!isPhoneValid(phone)) {\n            mPhoneView.setError(getString(R.string.error_invalid_email));\n            focusView = mPhoneView;\n            cancel = true;\n        }\n\n        if (cancel) {\n            // There was an error; don't attempt login and focus the first\n            // form field with an error.\n            focusView.requestFocus();\n        } else {\n            mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {\n\n                @Override\n                public void onVerificationCompleted(final PhoneAuthCredential credential) {\n                    // This callback will be invoked in two situations:\n                    // 1 - Instant verification. In some cases the phone number can be instantly\n                    //     verified without needing to send or enter a verification code.\n                    // 2 - Auto-retrieval. On some devices Google Play services can automatically\n                    //     detect the incoming verification SMS and perform verificaiton without\n                    //     user action.\n                    Log.d(TAG, \"onVerificationCompleted:\" + credential);\n                    LoginActivity.this.credential = credential;\n                    otpsent = true;\n                    signInWithPhoneAuthCredential(credential);\n\n                }\n\n                @Override\n                public void onVerificationFailed(FirebaseException e) {\n                    // This callback is invoked in an invalid request for verification is made,\n                    // for instance if the the phone number format is not valid.\n                    Log.w(TAG, \"onVerificationFailed\", e);\n                    progressBar.setVisibility(View.GONE);\n                    if (e instanceof FirebaseAuthInvalidCredentialsException) {\n                        // Invalid request\n                        // ...\n                    } else if (e instanceof FirebaseTooManyRequestsException) {\n                        // The SMS quota for the project has been exceeded\n                        // ...\n                    }\n\n                    // Show a message and update the UI\n                    // ...\n                }\n\n                @Override\n                public void onCodeSent(String verificationId,\n                                       PhoneAuthProvider.ForceResendingToken token) {\n                    // The SMS verification code has been sent to the provided phone number, we\n                    // now need to ask the user to enter the code and then construct a credential\n                    // by combining the code with a verification ID.\n                    Log.d(TAG, \"onCodeSent:\" + verificationId);\n\n                    // Save verification ID and resending token so we can use them later\n                    mVerificationId = verificationId;\n                    mResendToken = token;\n                    otpsent = false;\n\n                }\n            };\n\n            progressBar.setVisibility(View.VISIBLE);\n            mEmailSignInButton.setVisibility(View.GONE);\n            textView.setText(\"Verifying OTP\");\n\n            PhoneAuthProvider.getInstance().verifyPhoneNumber(\n                    phone,        // Phone number to verify\n                    60,                 // Timeout duration\n                    TimeUnit.SECONDS,   // Unit of timeout\n                    this,               // Activity (for callback binding)\n                    mCallbacks);\n        }\n    }\n\n\n    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {\n        progressBar.setVisibility(View.VISIBLE);\n            textView.setText(\"Signing In\");\n            mAuth.signInWithCredential(credential)\n                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {\n                        @Override\n                        public void onComplete(@NonNull Task<AuthResult> task) {\n                            if (task.isSuccessful()) {\n                                // Sign in success, update UI with the signed-in user's information\n                                Log.d(TAG, \"signInWithCredential:success\");\n                                final FirebaseUser user = task.getResult().getUser();\n                                mRef = FirebaseDatabase.getInstance().getReference();\n                                mRef.child(\"Users\").child(user.getPhoneNumber()).child(\"UID\").setValue(user.getUid(), new DatabaseReference.CompletionListener() {\n                                    @Override\n                                    public void onComplete(DatabaseError\n                                                                   databaseError, DatabaseReference databaseReference) {\n                                        editor.putString(\"phone\", user.getPhoneNumber());\n                                        editor.putString(\"uid\", user.getUid());\n                                        editor.commit();\n                                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));\n                                    }\n                                });\n\n                            } else {\n                                // Sign in failed, display a message and update the UI\n                                progressBar.setVisibility(View.GONE);\n                                Log.w(TAG, \"signInWithCredential:failure\", task.getException());\n                                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {\n                                    // The verification code entered was invalid\n                                }\n                            }\n                        }\n                    });\n    }\n\n    private boolean isPhoneValid(String phone) {\n            return phone.length() == 10;\n    }\n\n\n    private String parseCode(String message) {\n        Pattern p = Pattern.compile(\"\\\\b\\\\d{6}\\\\b\");\n        Matcher m = p.matcher(message);\n        String code = \"\";\n        while (m.find()) {\n            code = m.group(0);\n        }\n        Log.d(\"CODE\", code);\n        return code;\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/carehack/medivault/LoginActivity.java	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/java/com/carehack/medivault/LoginActivity.java	(revision )
+@@ -24,9 +24,11 @@
+ import com.google.firebase.auth.FirebaseUser;
+ import com.google.firebase.auth.PhoneAuthCredential;
+ import com.google.firebase.auth.PhoneAuthProvider;
++import com.google.firebase.database.DataSnapshot;
+ import com.google.firebase.database.DatabaseError;
+ import com.google.firebase.database.DatabaseReference;
+ import com.google.firebase.database.FirebaseDatabase;
++import com.google.firebase.database.ValueEventListener;
+ 
+ import java.util.concurrent.TimeUnit;
+ import java.util.regex.Matcher;
+@@ -62,16 +64,8 @@
+         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
+         editor = sharedPreferences.edit();
+         if (sharedPreferences.contains("uid")) {
+-            if(sharedPreferences.contains("address")) {
+-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+-                finish();
+-            }
+-            else
+-            {
+-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+-                finish();
+-            }
+-            return;
++            String role = sharedPreferences.getString("role",null);
++            startActivityBasedOnRole(role);
+         }
+         setContentView(R.layout.activity_login);
+         mPhoneView = findViewById(R.id.edit_text_phone_number);
+@@ -229,14 +223,32 @@
+                                 Log.d(TAG, "signInWithCredential:success");
+                                 final FirebaseUser user = task.getResult().getUser();
+                                 mRef = FirebaseDatabase.getInstance().getReference();
+-                                mRef.child("Users").child(user.getPhoneNumber()).child("UID").setValue(user.getUid(), new DatabaseReference.CompletionListener() {
++                                mRef.child("Users").child(user.getPhoneNumber()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                     @Override
+-                                    public void onComplete(DatabaseError
+-                                                                   databaseError, DatabaseReference databaseReference) {
++                                    public void onDataChange(final DataSnapshot dataSnapshot) {
++                                        final String role = dataSnapshot.child("Role").getValue(String.class);
+                                         editor.putString("phone", user.getPhoneNumber());
+                                         editor.putString("uid", user.getUid());
++                                        editor.putString("role", role);
+                                         editor.commit();
+-                                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
++                                        if(!dataSnapshot.hasChild("UID")) {
++                                            mRef.child("Users").child(user.getPhoneNumber()).child("UID").setValue(user.getUid(), new DatabaseReference.CompletionListener() {
++                                                @Override
++                                                public void onComplete(DatabaseError
++                                                                               databaseError, DatabaseReference databaseReference) {
++                                                    startActivityBasedOnRole(role);
++                                                }
++                                            });
++                                        }
++                                        else
++                                        {
++                                            startActivityBasedOnRole(role);
++                                        }
++                                    }
++
++                                    @Override
++                                    public void onCancelled(DatabaseError databaseError) {
++
+                                     }
+                                 });
+ 
+@@ -252,6 +264,24 @@
+                     });
+     }
+ 
++    private void startActivityBasedOnRole(String role) {
++        if(role!=null)
++        {
++            if(role.equals("Doctor"))
++                startActivity(new Intent(LoginActivity.this,DoctorMainActivity.class));
++            else if(role.equals("User")) {
++                if(sharedPreferences.contains("address")) {
++                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
++                    finish();
++                }
++                else {
++                    startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
++                }
++            }
++        }
++
++    }
++
+     private boolean isPhoneValid(String phone) {
+             return phone.length() == 10;
+     }
+Index: app/src/main/java/com/carehack/medivault/DoctorMainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/carehack/medivault/DoctorMainActivity.java	(revision )
++++ app/src/main/java/com/carehack/medivault/DoctorMainActivity.java	(revision )
+@@ -0,0 +1,66 @@
++package com.carehack.medivault;
++
++import android.content.Intent;
++import android.support.v7.app.AppCompatActivity;
++import android.os.Bundle;
++import android.text.TextUtils;
++import android.view.View;
++import android.widget.Button;
++import android.widget.EditText;
++
++public class DoctorMainActivity extends AppCompatActivity {
++
++    EditText mPhoneView;
++    Button submit;
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_doctor_main);
++        mPhoneView = findViewById(R.id.edit_text_phone_number);
++        submit = findViewById(R.id.btn_next);
++        submit.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                attemptIntent();
++            }
++        });
++    }
++
++    private void attemptIntent() {
++
++        mPhoneView.setError(null);
++
++        // Store values at the time of the login attempt.
++        String phone = mPhoneView.getText().toString();
++
++        boolean cancel = false;
++        View focusView = null;
++
++
++        // Check for a valid phone
++        if (TextUtils.isEmpty(phone)) {
++            mPhoneView.setError(getString(R.string.error_field_required));
++            focusView = mPhoneView;
++            cancel = true;
++        } else if (!isPhoneValid(phone)) {
++            mPhoneView.setError(getString(R.string.error_invalid_email));
++            focusView = mPhoneView;
++            cancel = true;
++        }
++
++        if (cancel) {
++            // There was an error; don't attempt login and focus the first
++            // form field with an error.
++            focusView.requestFocus();
++        } else {
++            Intent intent = new Intent(DoctorMainActivity.this , ListenActivity.class);
++            intent.putExtra("phone",phone);
++            startActivity(intent);
++        }
++    }
++
++    private boolean isPhoneValid(String phone) {
++        return phone.length() == 10;
++    }
++}
+Index: app/src/main/res/layout/activity_doctor_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<android.support.constraint.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    tools:context=\"com.carehack.medivault.DoctorMainActiivty\">\n\n</android.support.constraint.ConstraintLayout>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_doctor_main.xml	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/res/layout/activity_doctor_main.xml	(revision )
+@@ -1,9 +1,101 @@
+-<?xml version="1.0" encoding="utf-8"?>
+ <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    tools:context="com.carehack.medivault.DoctorMainActiivty">
++    android:gravity="center_horizontal"
++    android:orientation="vertical"
++    android:paddingBottom="@dimen/activity_vertical_margin"
++    android:paddingLeft="@dimen/activity_horizontal_margin"
++    android:paddingRight="@dimen/activity_horizontal_margin"
++    android:paddingTop="@dimen/activity_vertical_margin"
++    tools:context=".LoginActivity"
++    android:background="#fff"
++    android:id="@+id/constraint_layout">
+ 
++
++    <ImageView
++        android:id="@+id/imageView"
++        android:layout_width="80dp"
++        android:layout_height="80dp"
++        android:layout_marginEnd="8dp"
++        android:layout_marginLeft="8dp"
++        android:layout_marginRight="8dp"
++        android:layout_marginStart="8dp"
++        android:layout_marginTop="24dp"
++        app:layout_constraintLeft_toLeftOf="parent"
++        app:layout_constraintRight_toRightOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        app:srcCompat="@drawable/medivault" />
++
++    <TextView
++        android:id="@+id/textView"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginEnd="8dp"
++        android:layout_marginLeft="8dp"
++        android:layout_marginRight="8dp"
++        android:layout_marginStart="8dp"
++        android:layout_marginTop="16dp"
++        android:text="@string/main_desc"
++        android:textColor="@color/main_colour_blue_dark"
++        android:textSize="@dimen/android_text_size"
++        app:layout_constraintLeft_toLeftOf="parent"
++        app:layout_constraintRight_toRightOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/imageView" />
++
++    <android.support.design.widget.TextInputLayout
++        android:id="@+id/textInputLayout"
++        android:layout_width="0dp"
++        android:layout_height="wrap_content"
++        android:layout_marginEnd="8dp"
++        android:layout_marginLeft="8dp"
++        android:layout_marginRight="8dp"
++        android:layout_marginStart="8dp"
++        android:layout_marginTop="16dp"
++        android:visibility="visible"
++        app:layout_constraintLeft_toLeftOf="parent"
++        app:layout_constraintRight_toRightOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/textView">
++
++        <android.support.design.widget.TextInputEditText
++            android:id="@+id/edit_text_phone_number"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:hint="Phone Number"
++            android:inputType="phone"
++            tools:layout_editor_absoluteX="8dp"
++            tools:layout_editor_absoluteY="0dp" />
++    </android.support.design.widget.TextInputLayout>
++
++
++    <ProgressBar
++        android:id="@+id/progressbar"
++        style="Widget.DeviceDefault.Light.ProgressBar.Large"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        app:layout_constraintTop_toBottomOf="@id/textInputLayout"
++        android:layout_marginTop="16dp"
++        android:layout_marginLeft="8dp"
++        app:layout_constraintLeft_toLeftOf="parent"
++        android:layout_marginRight="8dp"
++        android:visibility="gone"
++        app:layout_constraintRight_toRightOf="parent" />
++
++    <Button
++        android:id="@+id/btn_next"
++        style="@style/Widget.AppCompat.Button"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:background="@color/colorPrimaryDark"
++        android:text="@string/action_sign_in_next"
++        android:textColor="@color/white"
++        android:layout_marginLeft="8dp"
++        app:layout_constraintLeft_toLeftOf="parent"
++        android:layout_marginRight="8dp"
++        app:layout_constraintRight_toRightOf="parent"
++        android:layout_marginStart="8dp"
++        android:layout_marginEnd="8dp"
++        android:layout_marginTop="16dp"
++        app:layout_constraintTop_toBottomOf="@+id/progressbar" />
+ </android.support.constraint.ConstraintLayout>
+Index: app/src/main/res/layout/activity_listen.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_listen.xml	(revision )
++++ app/src/main/res/layout/activity_listen.xml	(revision )
+@@ -0,0 +1,67 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context="com.carehack.medivault.ListenActivity">
++
++    <com.carehack.medivault.custom_font.MyTextView
++        android:id="@+id/textview"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        app:layout_constraintBottom_toTopOf="@+id/avi"
++        app:layout_constraintLeft_toRightOf="parent"
++        app:layout_constraintRight_toLeftOf="parent"
++        android:text="Please Wait..."
++        android:textSize="25sp"
++        android:textStyle="bold"
++        android:layout_marginBottom="16dp"
++        android:layout_marginLeft="16dp"
++        android:layout_marginRight="16dp"
++        android:gravity="center"
++        />
++
++    <android.support.v7.widget.AppCompatImageView
++        android:id="@+id/imageView"
++        android:layout_width="96dp"
++        android:layout_height="96dp"
++        android:src="@drawable/ic_voice"
++        android:visibility="gone"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintLeft_toLeftOf="parent"
++        app:layout_constraintRight_toRightOf="parent"
++        app:layout_constraintTop_toTopOf="parent"/>
++
++    <ProgressBar
++        android:id="@+id/progressbar"
++        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginBottom="8dp"
++        android:layout_marginLeft="8dp"
++        android:layout_marginRight="8dp"
++        android:layout_marginTop="8dp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintLeft_toLeftOf="parent"
++        app:layout_constraintRight_toRightOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        android:layout_marginStart="8dp"
++        android:layout_marginEnd="8dp" />
++    <com.wang.avi.AVLoadingIndicatorView
++        android:id="@+id/avi"
++        style="@style/AVLoadingIndicatorView"
++        android:layout_width="96dp"
++        android:layout_height="96dp"
++        android:layout_marginBottom="8dp"
++        android:layout_marginEnd="8dp"
++        android:layout_marginStart="8dp"
++        android:layout_marginTop="8dp"
++        android:visibility="invisible"
++        app:indicatorColor="@color/colorPrimary"
++        app:indicatorName="BallScaleMultipleIndicator"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
++</android.support.constraint.ConstraintLayout>
+Index: app/src/main/res/layout/activity_login.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><android.support.constraint.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    android:gravity=\"center_horizontal\"\n    android:orientation=\"vertical\"\n    android:paddingBottom=\"@dimen/activity_vertical_margin\"\n    android:paddingLeft=\"@dimen/activity_horizontal_margin\"\n    android:paddingRight=\"@dimen/activity_horizontal_margin\"\n    android:paddingTop=\"@dimen/activity_vertical_margin\"\n    tools:context=\".LoginActivity\"\n    android:background=\"#fff\"\n    android:id=\"@+id/constraint_layout\">\n\n\n    <ImageView\n        android:id=\"@+id/imageView\"\n        android:layout_width=\"80dp\"\n        android:layout_height=\"80dp\"\n        android:layout_marginEnd=\"8dp\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginTop=\"24dp\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\"\n        app:srcCompat=\"@drawable/ic_doctor_snake\"\n        tools:ignore=\"VectorDrawableCompat\" />\n\n    <TextView\n        android:id=\"@+id/textView\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginEnd=\"8dp\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginTop=\"16dp\"\n        android:text=\"@string/login_desc\"\n        android:textColor=\"@color/main_colour_blue_dark\"\n        android:textSize=\"@dimen/android_text_size\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toBottomOf=\"@+id/imageView\" />\n\n    <android.support.design.widget.TextInputLayout\n        android:id=\"@+id/textInputLayout\"\n        android:layout_width=\"0dp\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginEnd=\"8dp\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginTop=\"16dp\"\n        android:visibility=\"visible\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toBottomOf=\"@+id/textView\">\n\n        <android.support.design.widget.TextInputEditText\n            android:id=\"@+id/edit_text_phone_number\"\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            android:hint=\"Phone Number\"\n            android:inputType=\"phone\"\n            tools:layout_editor_absoluteX=\"8dp\"\n            tools:layout_editor_absoluteY=\"0dp\" />\n    </android.support.design.widget.TextInputLayout>\n\n\n    <ProgressBar\n        android:id=\"@+id/progressbar\"\n        style=\"Widget.DeviceDefault.Light.ProgressBar.Large\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        app:layout_constraintTop_toBottomOf=\"@id/textInputLayout\"\n        android:layout_marginTop=\"16dp\"\n        android:layout_marginLeft=\"8dp\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        android:layout_marginRight=\"8dp\"\n        android:visibility=\"gone\"\n        app:layout_constraintRight_toRightOf=\"parent\" />\n\n    <Button\n        android:id=\"@+id/btn_next\"\n        style=\"@style/Widget.AppCompat.Button\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:background=\"@color/colorPrimaryDark\"\n        android:text=\"@string/action_sign_in_next\"\n        android:textColor=\"@color/white\"\n        android:layout_marginLeft=\"8dp\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        android:layout_marginRight=\"8dp\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginEnd=\"8dp\"\n        android:layout_marginTop=\"16dp\"\n        app:layout_constraintTop_toBottomOf=\"@+id/progressbar\" />\n</android.support.constraint.ConstraintLayout>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_login.xml	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/res/layout/activity_login.xml	(revision )
+@@ -26,7 +26,7 @@
+         app:layout_constraintLeft_toLeftOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+-        app:srcCompat="@drawable/ic_doctor_snake"
++        app:srcCompat="@drawable/medivault"
+         tools:ignore="VectorDrawableCompat" />
+ 
+     <TextView
+Index: app/src/main/res/layout/activity_register.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><android.support.constraint.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    android:gravity=\"center_horizontal\"\n    android:orientation=\"vertical\"\n    android:paddingTop=\"@dimen/activity_vertical_margin\"\n    android:background=\"@color/white\">\n\n\n    <ImageView\n        android:id=\"@+id/imageView\"\n        android:layout_width=\"80dp\"\n        android:layout_height=\"80dp\"\n        android:layout_marginEnd=\"8dp\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginTop=\"24dp\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\"\n        app:srcCompat=\"@drawable/ic_doctor_snake\" />\n\n    <ProgressBar\n        android:id=\"@+id/progressbar\"\n        style=\"@android:style/Widget.DeviceDefault.Light.ProgressBar.Large\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginBottom=\"8dp\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:layout_marginTop=\"8dp\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\"\n        app:layout_constraintVertical_bias=\"0.41000003\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginEnd=\"8dp\" />\n    <Button\n        android:id=\"@+id/btn_continue\"\n        android:layout_width=\"0dp\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginLeft=\"0dp\"\n        android:layout_marginRight=\"0dp\"\n        android:background=\"@color/colorPrimaryDark\"\n        android:text=\"CONTINUE\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        android:visibility=\"gone\"\n        android:textColor=\"@color/white\"/>\n\n    <ScrollView\n        android:id=\"@+id/scrollview\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:scrollbars=\"none\"\n        android:visibility=\"visible\"\n        app:layout_constraintBottom_toTopOf=\"@id/btn_continue\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toBottomOf=\"@id/imageView\">\n\n        <android.support.constraint.ConstraintLayout\n            android:layout_width=\"match_parent\"\n            android:layout_height=\"wrap_content\"\n            tools:layout_editor_absoluteX=\"8dp\"\n            tools:layout_editor_absoluteY=\"8dp\">\n\n            <TextView\n                android:id=\"@+id/textView\"\n                android:layout_width=\"wrap_content\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"16dp\"\n                android:gravity=\"center\"\n                android:text=\"Enter your Personal Details\"\n                android:textAppearance=\"@style/TextAppearance.AppCompat.Body1\"\n                android:textSize=\"@dimen/android_text_size\"\n                android:visibility=\"gone\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"parent\" />\n\n            <android.support.design.widget.TextInputLayout\n                android:id=\"@+id/textInputLayout\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"8dp\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/textView\">\n\n                <EditText\n                    android:id=\"@+id/name\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"wrap_content\"\n                    android:hint=\"Name\"\n                    android:inputType=\"text\"\n                    android:visibility=\"gone\" />\n            </android.support.design.widget.TextInputLayout>\n\n\n            <android.support.design.widget.TextInputLayout\n                android:id=\"@+id/textInputLayout2\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"8dp\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/textInputLayout\">\n\n                <EditText\n                    android:id=\"@+id/dob\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"wrap_content\"\n                    android:clickable=\"true\"\n                    android:editable=\"false\"\n                    android:focusable=\"false\"\n                    android:hint=\"Date of Birth\"\n                    android:visibility=\"gone\" />\n            </android.support.design.widget.TextInputLayout>\n\n            <android.support.design.widget.TextInputLayout\n                android:id=\"@+id/textInputLayout3\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"8dp\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/textInputLayout2\">\n\n                <EditText\n                    android:id=\"@+id/height\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"wrap_content\"\n                    android:gravity=\"top|left\"\n                    android:hint=\"Height (in cm)\"\n                    android:inputType=\"number\"\n                    android:visibility=\"gone\" />\n            </android.support.design.widget.TextInputLayout>\n\n            <android.support.design.widget.TextInputLayout\n                android:id=\"@+id/textInputLayout4\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"8dp\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/textInputLayout3\">\n\n                <EditText\n                    android:id=\"@+id/weight\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"wrap_content\"\n                    android:gravity=\"top|left\"\n                    android:hint=\"Weight (in Kg)\"\n                    android:inputType=\"numberDecimal\"\n                    android:visibility=\"gone\" />\n            </android.support.design.widget.TextInputLayout>\n\n            <android.support.design.widget.TextInputLayout\n                android:id=\"@+id/textInputLayout5\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"8dp\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/textInputLayout4\">\n\n                <EditText\n                    android:id=\"@+id/allergies\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"wrap_content\"\n                    android:hint=\"Allergies (Optional)\"\n                    android:inputType=\"text\"\n                    android:visibility=\"gone\" />\n            </android.support.design.widget.TextInputLayout>\n\n            <android.support.design.widget.TextInputLayout\n                android:id=\"@+id/textInputLayout6\"\n                android:layout_width=\"0dp\"\n                android:layout_height=\"wrap_content\"\n                android:layout_marginEnd=\"8dp\"\n                android:layout_marginLeft=\"8dp\"\n                android:layout_marginRight=\"8dp\"\n                android:layout_marginStart=\"8dp\"\n                android:layout_marginTop=\"8dp\"\n                app:layout_constraintLeft_toLeftOf=\"parent\"\n                app:layout_constraintRight_toRightOf=\"parent\"\n                app:layout_constraintTop_toBottomOf=\"@+id/textInputLayout5\">\n\n                <EditText\n                    android:id=\"@+id/address\"\n                    android:layout_width=\"match_parent\"\n                    android:layout_height=\"wrap_content\"\n                    android:gravity=\"top|left\"\n                    android:hint=\"Address\"\n                    android:inputType=\"textMultiLine\"\n                    android:lines=\"5\"\n                    android:visibility=\"gone\" />\n            </android.support.design.widget.TextInputLayout>\n\n        </android.support.constraint.ConstraintLayout>\n    </ScrollView>\n\n\n\n\n\n</android.support.constraint.ConstraintLayout>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_register.xml	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/res/layout/activity_register.xml	(revision )
+@@ -21,7 +21,7 @@
+         app:layout_constraintLeft_toLeftOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+-        app:srcCompat="@drawable/ic_doctor_snake" />
++        app:srcCompat="@drawable/medivault" />
+ 
+     <ProgressBar
+         android:id="@+id/progressbar"
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\n    <string name=\"app_name\">medivault</string>\n    <string name=\"enter_mob_number\">Enter your mobile number.</string>\n    <string name=\"register\">Register</string>\n    <string name=\"login_desc\">Enter your mobile number to get started</string>\n    <string name=\"verification_text\">Code</string>\n    <string name=\"action_sign_in_next\">Next</string>\n    <string name=\"register_desc\">Enter your name and address which the item is to be dispatched.</string>\n    <string name=\"action_register\">Continue</string>\n    <string name=\"edit_str\">Edit</string>\n    <string name=\"confirmation_text_dialog\">Is this OK, or would you like to edit this number?</string>\n    <string name=\"title_activity_main\">MainActivity</string>\n    <string name=\"title_home\">Home</string>\n    <string name=\"title_dashboard\">Dashboard</string>\n    <string name=\"title_appointments\">Appointments</string>\n    <string name=\"title_notifications\">Notifications</string>\n    <string name=\"error_field_required\">This field is required</string>\n    <string name=\"error_invalid_email\">Please enter a 10 digit phone number</string>\n    <string name=\"title_activity_doctor_list\">DoctorList</string>\n    <string name=\"title_activity_home\">Home</string>\n    <string name=\"title_activity_prescription_list\">PrescriptionList</string>\n</resources>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision b8e094bab5d47db04a25b3719b93ffbc112a19f7)
++++ app/src/main/res/values/strings.xml	(revision )
+@@ -1,8 +1,9 @@
+ <resources>
+-    <string name="app_name">medivault</string>
++    <string name="app_name">MediVault</string>
+     <string name="enter_mob_number">Enter your mobile number.</string>
+     <string name="register">Register</string>
+     <string name="login_desc">Enter your mobile number to get started</string>
++    <string name="main_desc">Enter the patient\'s mobile number</string>
+     <string name="verification_text">Code</string>
+     <string name="action_sign_in_next">Next</string>
+     <string name="register_desc">Enter your name and address which the item is to be dispatched.</string>
+@@ -18,5 +19,7 @@
+     <string name="error_invalid_email">Please enter a 10 digit phone number</string>
+     <string name="title_activity_doctor_list">DoctorList</string>
+     <string name="title_activity_home">Home</string>
++    <string name="chirp_app_key">ZBH8vddyJdCwsezkwlxdduI0p</string>
++    <string name="chirp_app_secret">mLlWM9tnIThgpoj8ugRkqeX2wI2ykXCBYDTIQCKEYGBe8GgMKN</string>
+     <string name="title_activity_prescription_list">PrescriptionList</string>
+ </resources>
