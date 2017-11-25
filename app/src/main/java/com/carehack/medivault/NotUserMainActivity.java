@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class DoctorMainActivity extends AppCompatActivity {
+public class NotUserMainActivity extends AppCompatActivity {
 
     EditText mPhoneView;
     Button submit;
@@ -54,7 +54,7 @@ public class DoctorMainActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(DoctorMainActivity.this , ListenActivity.class);
+            Intent intent = new Intent(NotUserMainActivity.this , ListenActivity.class);
             intent.putExtra("phone",phone);
             startActivity(intent);
         }

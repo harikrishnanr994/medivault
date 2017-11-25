@@ -1,10 +1,12 @@
 package com.carehack.medivault;
 
+import java.io.Serializable;
+
 /**
  * Created by sachin on 26/11/17.
  */
 
-public class DataClass {
+public class DataClass implements Serializable{
     private String title,subtitle,date;
 
     public DataClass() {

@@ -12,7 +12,7 @@ import android.widget.Spinner;
  * Created by harihara on 25/11/17.
  */
 
-public class DoctorAddActivity extends AppCompatActivity {
+public class DoctorPrescriptionActivity extends AppCompatActivity {
 
     Button submit;
     com.jaredrummler.materialspinner.MaterialSpinner spinner;

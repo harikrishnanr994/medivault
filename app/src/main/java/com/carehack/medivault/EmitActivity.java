@@ -180,14 +180,23 @@ public class EmitActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                final String receivedText,type;
+                                final String receivedText,type,message;
                                 try {
                                     receivedText = (String) chirp.getJsonData().get("text");
                                     type = (String) chirp.getJsonData().get("type");
+                                    message = (String) chirp.getJsonData().get("message");
+
                                     if(receivedText.equals(shared_key) && type.equals("Ack")) {
-                                        SharedKeyManager sharedKeyManager = new SharedKeyManager(EmitActivity.this);
-                                        sharedKeyManager.assignNewSharedKey(phone);
-                                        Toast.makeText(getApplicationContext(), "Authentication Successful", Toast.LENGTH_LONG).show();
+                                        if(message.equals("Success")) {
+                                            SharedKeyManager sharedKeyManager = new SharedKeyManager(EmitActivity.this);
+                                            sharedKeyManager.assignNewSharedKey(phone);
+                                            Toast.makeText(getApplicationContext(), "Authentication Successful", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                     else
                                     {

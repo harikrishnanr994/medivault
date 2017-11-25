@@ -24,11 +24,6 @@ public class PendingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         pending=new ArrayList<>();
 
-        //Dummy data
-        pending.add("Riverrun Test Centre");
-        pending.add("Aerys Health Centre");
-        pending.add("Freddy's Clinic");
-        //
         return inflater.inflate(R.layout.fragment_pending, container, false);
     }
 
@@ -36,9 +31,6 @@ public class PendingFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pendingRV=view.findViewById(R.id.pendingRV);
-        //add onDataChange Listener here
-
-        //
 
         pendingRVAdapter=new PendingRVAdapter(pending);
         pendingRV.setLayoutManager(new LinearLayoutManager(getContext()));
