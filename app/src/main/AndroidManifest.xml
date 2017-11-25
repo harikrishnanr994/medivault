@@ -19,7 +19,6 @@
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,7 +34,10 @@
         <activity android:name=".ProfileDetails" />
         <activity android:name=".DoctorAddActivity" />
         <activity android:name=".ViewDetailsActivity" />
-        <activity android:name=".HospitalViewActivity"></activity>
+        <activity android:name=".HospitalViewActivity"
+            android:theme="@style/AppTheme.Main"></activity>
+        <activity android:name=".PrescriptionReport"
+            android:theme="@style/AppTheme.Main"></activity>
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@ public class HomeFragment extends Fragment {
 
     MyTextView name_txt,dob_txt,height_txt,weight_txt;
 
-    CardView connect,hospital;
+    CardView connect,hospital,card_view_prescription;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
@@ -49,6 +49,7 @@ public class HomeFragment extends Fragment {
         weight_txt.setText(weight);
         connect = v.findViewById(R.id.card_view_connect);
         hospital = v.findViewById(R.id.card_view_hospital);
+        card_view_prescription = v.findViewById(R.id.card_view_prescription);
         hospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +62,12 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(getActivity(),EmitActivity.class));
             }
         });
-
+        card_view_prescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(),PrescriptionReport.class));
+            }
+        });
         return v;
     }
 }
