@@ -58,12 +58,12 @@ public class ListenActivity extends AppCompatActivity {
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         progressBar.setVisibility(View.GONE);
                         imageView.setVisibility(View.VISIBLE);
-                        textView.setText("Click on the button below to start recording");
+                        textView.setText("Click on the button below to start Listening");
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 imageView.setVisibility(View.GONE);
-                                textView.setText("Recording Audio...");
+                                textView.setText("Listening... Please wait...");
                                 avLoadingIndicatorView.setVisibility(View.VISIBLE);
                                 recordChirp();
                             }
