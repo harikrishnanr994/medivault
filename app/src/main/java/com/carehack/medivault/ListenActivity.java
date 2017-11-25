@@ -1,6 +1,7 @@
 package com.carehack.medivault;
 
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,9 +24,11 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
+import io.chirp.sdk.CallbackCreate;
 import io.chirp.sdk.CallbackRead;
 import io.chirp.sdk.ChirpSDK;
 import io.chirp.sdk.ChirpSDKListener;
@@ -102,6 +105,38 @@ public class ListenActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         chirpSDK.stop();
+    }
+
+    private void sendChirp() throws JSONException
+    {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("text", "123456");
+        Chirp chirp = new Chirp(jsonObject);
+        chirpSDK.create(chirp, new CallbackCreate() {
+            @Override
+            public void onCreateResponse(Chirp chirp) {
+                chirpSDK.chirp(chirp);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView.setText("Waiting for Response");
+                            }
+                        },500);
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onCreateError(ChirpError chirpError) {
+                Log.d("ChirpError", "onCreateError: " + chirpError.getMessage());
+            }
+        });
     }
 
     private void recordChirp() {
