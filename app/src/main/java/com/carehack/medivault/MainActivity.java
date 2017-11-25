@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Dashboard");
         bottomBar = findViewById(R.id.bottomNavigationView);
         fragmentManager=getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.dashboard_frag_lay, new HomeFragment())
+                .commit();
         bottomBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

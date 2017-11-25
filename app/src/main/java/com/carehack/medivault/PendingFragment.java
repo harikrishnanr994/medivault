@@ -14,6 +14,6 @@ import android.view.ViewGroup;
 public class PendingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_pending, container, false);
     }
 }

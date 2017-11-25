@@ -5,7 +5,8 @@
     android:id="@+id/dashboard_base_lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.carehack.medivault.MainActivity">
+    tools:context="com.carehack.medivault.MainActivity"
+    >
     <android.support.design.widget.AppBarLayout
         android:id="@+id/tabanim_appbar"
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorAccent"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme"/>
+            app:popupTheme="@style/AppTheme" />
 
     </android.support.design.widget.AppBarLayout>
 

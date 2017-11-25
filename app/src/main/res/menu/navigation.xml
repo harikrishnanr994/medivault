@@ -8,5 +8,5 @@
     <item
         android:id="@+id/navigation_menu_pending"
         android:icon="@drawable/doctor_icon"
-        android:title="@string/title_doctor" />
+        android:title="Pending" />
 </menu>
