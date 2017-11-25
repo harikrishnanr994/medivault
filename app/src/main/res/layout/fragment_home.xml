@@ -31,6 +31,7 @@
                             app:civ_border_width="2dp"
                             app:civ_border_color="#FFF"/>
                         <com.carehack.medivault.custom_font.MyTextView
+                                android:id="@+id/name"
                                 android:layout_marginTop="10dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -38,28 +39,55 @@
                                 android:textColor="#fff"
                                 android:text="Bineesh P Babu"/>
                         <com.carehack.medivault.custom_font.MyTextView
+                                android:id="@+id/dob"
                                 android:layout_marginTop="5dp"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#fff"
                                 android:text="30/08/1995"/>
-
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
                         <com.carehack.medivault.custom_font.MyTextView
+                                android:id="@+id/height"
                                 android:layout_marginTop="5dp"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#fff"
-                                android:text="173 'cm"/>
+                                android:text="173"/>
+                            <com.carehack.medivault.custom_font.MyTextView
+                                android:id="@+id/height_measure"
+                                android:layout_marginTop="5dp"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#fff"
+                                android:text=" cm"/>
+                        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <com.carehack.medivault.custom_font.MyTextView
+                                android:id="@+id/weight"
                                 android:layout_marginTop="5dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="#fff"
                                 android:textStyle="bold"
-                                android:text="55 Kg"/>
+                                android:text="55"/>
+                        <com.carehack.medivault.custom_font.MyTextView
+                            android:id="@+id/weight_measure"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#fff"
+                            android:textStyle="bold"
+                            android:text=" Kg"/>
+                    </LinearLayout>
+
                     </LinearLayout>
                 <com.carehack.medivault.custom_font.MyTextView
                     android:id="@+id/edit_profile_text"
