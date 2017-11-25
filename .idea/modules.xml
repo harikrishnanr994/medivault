@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://E:\medivault\app\app.iml" filepath="E:\medivault\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/medivault.iml" filepath="$PROJECT_DIR$/medivault.iml" />
     </modules>
   </component>
