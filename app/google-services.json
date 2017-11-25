@@ -15,6 +15,38 @@
       },
       "oauth_client": [
         {
+          "client_id": "920701690237-5q87e6kiqk3f5bqfgftfa9038evm44eq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carehack.medivault",
+            "certificate_hash": "af5c140831f4dfc734888c8d18cebdc27047c75f"
+          }
+        },
+        {
+          "client_id": "920701690237-1rotj2u1t4pfg38a4ctdcv4krt6upvhp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carehack.medivault",
+            "certificate_hash": "f29755eb9dacc704b726ef538a6375bc797e3ffe"
+          }
+        },
+        {
+          "client_id": "920701690237-vsob7d7m90en2mal6grd4eoho6tnvcss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carehack.medivault",
+            "certificate_hash": "c98bb6004ec576cb20378425102bb64d0d4827e0"
+          }
+        },
+        {
+          "client_id": "920701690237-ip3ibff5n5b5ibrs3ng84ntukke4tr9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carehack.medivault",
+            "certificate_hash": "358afe032c62109a932275d688b4f29efcf60de0"
+          }
+        },
+        {
           "client_id": "920701690237-ntuue53m7fth48vu2h6ri0ntvk5g44hb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
