@@ -220,7 +220,14 @@ public class EmitActivity extends AppCompatActivity {
             @Override
             public void onChirpError(ChirpError chirpError) {
                 Log.d("ChirpError",chirpError.toString());
-                imageView.setVisibility(View.VISIBLE);
+                Log.d("ChirpError",chirpError.toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setVisibility(View.VISIBLE);
+                    }
+                });
+                Toast.makeText(getApplicationContext(),"QR Error",Toast.LENGTH_LONG).show();
             }
         });
         chirpSDK.start();

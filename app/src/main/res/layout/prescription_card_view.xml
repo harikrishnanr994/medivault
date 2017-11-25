@@ -25,7 +25,7 @@
             />
 
         <com.carehack.medivault.custom_font.MyTextView
-            android:id="@+id/course_name"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -49,11 +49,11 @@
             android:layout_marginLeft="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="12dp"
-            android:id="@+id/latoTextView" />
+            android:id="@+id/sub_title" />
 
 
         <com.carehack.medivault.custom_font.MyTextView
-            android:id="@+id/duration"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="30-08-2017"
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_calendar"
-            app:layout_constraintRight_toLeftOf="@+id/duration"
+            app:layout_constraintRight_toLeftOf="@+id/date"
             android:layout_marginRight="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="10dp"
