@@ -84,4 +84,15 @@ public class Utils {
                 return "";
         }
     }
+
+    public static String randomSequenceGenerator(int length)
+    {
+        String res="";
+        for(int i=0;i<length;i++)
+        {
+            int k=((int)Math.random())*10;
+            res+=k;
+        }
+        return  res;
+    }
 }
