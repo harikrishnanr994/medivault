@@ -24,7 +24,7 @@
             />
 
         <com.carehack.medivault.custom_font.MyTextView
-            android:id="@+id/course_name"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -48,11 +48,11 @@
             android:layout_marginLeft="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="12dp"
-            android:id="@+id/latoTextView" />
+            android:id="@+id/subtitle" />
 
 
         <com.carehack.medivault.custom_font.MyTextView
-            android:id="@+id/duration"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="30-08-2017"
