@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "920701690237",
+    "firebase_url": "https://medivault-618a5.firebaseio.com",
+    "project_id": "medivault-618a5",
+    "storage_bucket": "medivault-618a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920701690237:android:bd34d76486ce7d32",
+        "android_client_info": {
+          "package_name": "com.carehack.medivault"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920701690237-ntuue53m7fth48vu2h6ri0ntvk5g44hb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carehack.medivault",
+            "certificate_hash": "0d455c9330bfc8af51bb86626c14052726053794"
+          }
+        },
+        {
+          "client_id": "920701690237-pg3sacrnqau9t1u1ovbt01ukrkvdp85k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6cie7pwPCjXQW7mgBvP57iAKkbnA0hSo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920701690237-pg3sacrnqau9t1u1ovbt01ukrkvdp85k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
