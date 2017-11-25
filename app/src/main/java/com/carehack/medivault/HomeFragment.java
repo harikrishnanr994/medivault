@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +25,13 @@ public class HomeFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    MyTextView edit_profile_text,name_txt,dob_txt,height_txt,weight_txt;
+    MyTextView name_txt,dob_txt,height_txt,weight_txt;
+
+    CardView connect;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        edit_profile_text = v.findViewById(R.id.edit_profile_text);
         name_txt = v.findViewById(R.id.name);
         dob_txt = v.findViewById(R.id.dob);
         height_txt = v.findViewById(R.id.height);
@@ -45,10 +47,11 @@ public class HomeFragment extends Fragment {
         dob_txt.setText(dob);
         height_txt.setText(height);
         weight_txt.setText(weight);
-        edit_profile_text.setOnClickListener(new View.OnClickListener() {
+        connect = v.findViewById(R.id.card_view_connect);
+        connect.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(),ProfileDetails.class));
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),EmitActivity.class));
             }
         });
 

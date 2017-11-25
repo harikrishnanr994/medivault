@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -242,7 +243,13 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                         else
                                         {
-                                            startActivityBasedOnRole(role);
+                                            if(dataSnapshot.hasChild("Role"))
+                                                startActivityBasedOnRole(role);
+                                            else
+                                            {
+                                                progressBar.setVisibility(View.GONE);
+                                                Toast.makeText(getApplicationContext(),"Invalid User",Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
 
@@ -267,6 +274,7 @@ public class LoginActivity extends AppCompatActivity {
     private void startActivityBasedOnRole(String role) {
         if(role!=null)
         {
+            Log.d("Role",role);
             if(role.equals("Doctor"))
                 startActivity(new Intent(LoginActivity.this,DoctorMainActivity.class));
             else if(role.equals("User")) {
