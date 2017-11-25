@@ -161,12 +161,16 @@ public class ListenActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
+                                textView.setText("Playing...Please Wait..");
+                                avLoadingIndicatorView.setVisibility(View.VISIBLE);
                                 final String receivedText,phone,type;
                                 try {
                                     receivedText = (String) chirp.getJsonData().get("text");
                                     phone = (String) chirp.getJsonData().get("phone");
                                     type = (String) chirp.getJsonData().get("type");
+                                    Log.d("Phone",phone);
+                                    Log.d("Type",type);
+
                                     if(type.equals("Req")) {
                                         mRef.child("Shared Key").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override

@@ -22,9 +22,7 @@ public class DoctorMainActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DoctorMainActivity.this,DoctorAddActivity.class);
-                startActivity(intent);
-                //attemptIntent();
+                attemptIntent();
             }
         });
     }

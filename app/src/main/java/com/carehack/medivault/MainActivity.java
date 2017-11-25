@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     private FirebaseDatabase firebase;
     private DatabaseReference ref;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +55,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final SharedPreferences sharedPreferences=getSharedPreferences(Utils.pref, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         ref=firebase.getReference();
         ref.child("Shared Key").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String phone=sharedPreferences.getString("phone", null);
-
                 if(!dataSnapshot.hasChild(phone))
                 {
                     Log.v(">>",dataSnapshot.toString());
-                    SharedKeyManager skm=new SharedKeyManager();
+                    SharedKeyManager skm=new SharedKeyManager(MainActivity.this);
                     skm.assignNewSharedKey(phone);
+                }
+                else
+                {
+                    editor.putString("sharedkey", dataSnapshot.child(phone).getValue(String.class));
+                    editor.commit();
                 }
             }
 
