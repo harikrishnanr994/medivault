@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">medivault</string>
+    <string name="app_name">MediVault</string>
     <string name="enter_mob_number">Enter your mobile number.</string>
     <string name="register">Register</string>
     <string name="login_desc">Enter your mobile number to get started</string>
+    <string name="main_desc">Enter the patient\'s mobile number</string>
     <string name="verification_text">Code</string>
     <string name="action_sign_in_next">Next</string>
     <string name="register_desc">Enter your name and address which the item is to be dispatched.</string>
@@ -18,5 +19,7 @@
     <string name="error_invalid_email">Please enter a 10 digit phone number</string>
     <string name="title_activity_doctor_list">DoctorList</string>
     <string name="title_activity_home">Home</string>
+    <string name="chirp_app_key">ZBH8vddyJdCwsezkwlxdduI0p</string>
+    <string name="chirp_app_secret">mLlWM9tnIThgpoj8ugRkqeX2wI2ykXCBYDTIQCKEYGBe8GgMKN</string>
     <string name="title_activity_prescription_list">PrescriptionList</string>
 </resources>

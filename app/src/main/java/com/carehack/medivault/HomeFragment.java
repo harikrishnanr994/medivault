@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Bineesh on 25/11/2017.

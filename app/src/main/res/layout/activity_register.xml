@@ -21,7 +21,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_doctor_snake" />
+        app:srcCompat="@drawable/medivault" />
 
     <ProgressBar
         android:id="@+id/progressbar"
