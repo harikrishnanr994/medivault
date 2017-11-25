@@ -268,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
         if(role!=null)
         {
             if(role.equals("Doctor"))
-                startActivity(new Intent(LoginActivity.this,DoctorMainActivity.class));
+                startActivity(new Intent(LoginActivity.this,EmitActivity.class));
             else if(role.equals("User")) {
                 if(sharedPreferences.contains("address")) {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));

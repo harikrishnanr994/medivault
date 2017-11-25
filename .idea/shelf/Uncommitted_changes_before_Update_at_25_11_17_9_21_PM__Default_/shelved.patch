@@ -1,0 +1,81 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    package=\"com.carehack.medivault\">\n    <uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>\n    <uses-permission android:name=\"android.permission.INTERNET\"/>\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>\n    <application\n        android:allowBackup=\"true\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/AppTheme\">\n        <activity\n            android:name=\".LoginActivity\"\n            android:noHistory=\"true\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n        <activity\n            android:name=\".RegisterActivity\"\n            android:noHistory=\"true\" />\n        <activity android:name=\".MainActivity\"\n            android:theme=\"@style/AppTheme.Main\"/>\n        <activity android:name=\".DoctorMainActivity\" />\n        <activity android:name=\".ListenActivity\"></activity>\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(revision 89834ee421dd43f8b030d12f443113b96032c763)
++++ app/src/main/AndroidManifest.xml	(revision )
+@@ -1,10 +1,12 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     package="com.carehack.medivault">
+-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+-    <uses-permission android:name="android.permission.INTERNET"/>
+-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
++
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++
+     <application
+         android:allowBackup="true"
+         android:icon="@mipmap/ic_launcher"
+@@ -24,10 +26,12 @@
+         <activity
+             android:name=".RegisterActivity"
+             android:noHistory="true" />
+-        <activity android:name=".MainActivity"
+-            android:theme="@style/AppTheme.Main"/>
++        <activity
++            android:name=".MainActivity"
++            android:theme="@style/AppTheme.Main" />
+         <activity android:name=".DoctorMainActivity" />
+-        <activity android:name=".ListenActivity"></activity>
++        <activity android:name=".ListenActivity" />
++        <activity android:name=".EmitActivity"></activity>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_listen.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<android.support.constraint.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    tools:context=\"com.carehack.medivault.ListenActivity\">\n\n    <com.carehack.medivault.custom_font.MyTextView\n        android:id=\"@+id/textview\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        app:layout_constraintBottom_toTopOf=\"@+id/avi\"\n        app:layout_constraintLeft_toRightOf=\"parent\"\n        app:layout_constraintRight_toLeftOf=\"parent\"\n        android:text=\"Please Wait...\"\n        android:textSize=\"25sp\"\n        android:textStyle=\"bold\"\n        android:layout_marginBottom=\"16dp\"\n        android:layout_marginLeft=\"16dp\"\n        android:layout_marginRight=\"16dp\"\n        android:gravity=\"center\"\n        />\n\n    <android.support.v7.widget.AppCompatImageView\n        android:id=\"@+id/imageView\"\n        android:layout_width=\"96dp\"\n        android:layout_height=\"96dp\"\n        android:src=\"@drawable/ic_voice\"\n        android:visibility=\"gone\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\"/>\n\n    <ProgressBar\n        android:id=\"@+id/progressbar\"\n        style=\"@android:style/Widget.DeviceDefault.Light.ProgressBar.Large\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginBottom=\"8dp\"\n        android:layout_marginLeft=\"8dp\"\n        android:layout_marginRight=\"8dp\"\n        android:layout_marginTop=\"8dp\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintLeft_toLeftOf=\"parent\"\n        app:layout_constraintRight_toRightOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginEnd=\"8dp\" />\n    <com.wang.avi.AVLoadingIndicatorView\n        android:id=\"@+id/avi\"\n        style=\"@style/AVLoadingIndicatorView\"\n        android:layout_width=\"96dp\"\n        android:layout_height=\"96dp\"\n        android:layout_marginBottom=\"8dp\"\n        android:layout_marginEnd=\"8dp\"\n        android:layout_marginStart=\"8dp\"\n        android:layout_marginTop=\"8dp\"\n        android:visibility=\"invisible\"\n        app:indicatorColor=\"@color/colorPrimary\"\n        app:indicatorName=\"BallScaleMultipleIndicator\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintEnd_toEndOf=\"parent\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n</android.support.constraint.ConstraintLayout>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_listen.xml	(revision 89834ee421dd43f8b030d12f443113b96032c763)
++++ app/src/main/res/layout/activity_listen.xml	(revision )
+@@ -26,8 +26,8 @@
+         android:id="@+id/imageView"
+         android:layout_width="96dp"
+         android:layout_height="96dp"
+-        android:src="@drawable/ic_voice"
+-        android:visibility="gone"
++        android:src="@drawable/ic_emit_bell"
++        android:visibility="visible"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintLeft_toLeftOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"NullableNotNullManager\">\n    <option name=\"myDefaultNullable\" value=\"android.support.annotation.Nullable\" />\n    <option name=\"myDefaultNotNull\" value=\"android.support.annotation.NonNull\" />\n    <option name=\"myNullables\">\n      <value>\n        <list size=\"4\">\n          <item index=\"0\" class=\"java.lang.String\" itemvalue=\"org.jetbrains.annotations.Nullable\" />\n          <item index=\"1\" class=\"java.lang.String\" itemvalue=\"javax.annotation.Nullable\" />\n          <item index=\"2\" class=\"java.lang.String\" itemvalue=\"edu.umd.cs.findbugs.annotations.Nullable\" />\n          <item index=\"3\" class=\"java.lang.String\" itemvalue=\"android.support.annotation.Nullable\" />\n        </list>\n      </value>\n    </option>\n    <option name=\"myNotNulls\">\n      <value>\n        <list size=\"4\">\n          <item index=\"0\" class=\"java.lang.String\" itemvalue=\"org.jetbrains.annotations.NotNull\" />\n          <item index=\"1\" class=\"java.lang.String\" itemvalue=\"javax.annotation.Nonnull\" />\n          <item index=\"2\" class=\"java.lang.String\" itemvalue=\"edu.umd.cs.findbugs.annotations.NonNull\" />\n          <item index=\"3\" class=\"java.lang.String\" itemvalue=\"android.support.annotation.NonNull\" />\n        </list>\n      </value>\n    </option>\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_8\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\n  </component>\n  <component name=\"ProjectType\">\n    <option name=\"id\" value=\"Android\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 89834ee421dd43f8b030d12f443113b96032c763)
++++ .idea/misc.xml	(revision )
+@@ -24,7 +24,7 @@
+       </value>
+     </option>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">

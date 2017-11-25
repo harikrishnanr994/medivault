@@ -1,11 +1,16 @@
 package com.carehack.medivault;
 
+import android.*;
+import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,9 +28,11 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
+import io.chirp.sdk.CallbackCreate;
 import io.chirp.sdk.CallbackRead;
 import io.chirp.sdk.ChirpSDK;
 import io.chirp.sdk.ChirpSDKListener;
@@ -33,60 +40,67 @@ import io.chirp.sdk.ChirpSDKStatusListener;
 import io.chirp.sdk.model.Chirp;
 import io.chirp.sdk.model.ChirpError;
 
-public class ListenActivity extends AppCompatActivity {
+public class EmitActivity extends AppCompatActivity {
     ChirpSDK chirpSDK;
-    AVLoadingIndicatorView avLoadingIndicatorView;
     ProgressBar progressBar;
     ImageView imageView;
     TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listen);
-        avLoadingIndicatorView = findViewById(R.id.avi);
+        setContentView(R.layout.activity_emit);
         progressBar = findViewById(R.id.progressbar);
         textView = findViewById(R.id.textview);
         imageView = findViewById(R.id.imageView);
         chirpSDK = new ChirpSDK(getApplicationContext(), getResources().getString(R.string.chirp_app_key), getResources().getString(R.string.chirp_app_secret), new ChirpSDKStatusListener() {
             @Override
             public void onAuthenticationSuccess() {
-                Dexter.withActivity(ListenActivity.this)
-                        .withPermission(
-                                android.Manifest.permission.RECORD_AUDIO
-                        ).withListener(new PermissionListener() {
+                Dexter.withActivity(EmitActivity.this)
+                        .withPermissions(
+                                Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                                Manifest.permission.RECORD_AUDIO
+                        ).withListener(new MultiplePermissionsListener() {
                     @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
                         progressBar.setVisibility(View.GONE);
-                        imageView.setVisibility(View.VISIBLE);
-                        textView.setText("Click on the button below to start Listening");
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                imageView.setVisibility(View.GONE);
-                                textView.setText("Listening... Please wait...");
-                                avLoadingIndicatorView.setVisibility(View.VISIBLE);
-                                recordChirp();
-                            }
-                        });
+                        if(report.areAllPermissionsGranted())
+                        {
+                            imageView.setVisibility(View.VISIBLE);
+                            textView.setText("Click on the button below to pair with device");
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        Animation animation = AnimationUtils.loadAnimation(EmitActivity.this, R.anim.shake);
+                                        imageView.setAnimation(animation);
+                                        textView.setText("Sending Audio...");
+                                        sendChirp();
+                                    }catch (JSONException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                        else
+                        {
+                            PermissionListener dialogPermissionListener =
+                                    DialogOnDeniedPermissionListener.Builder
+                                            .withContext(EmitActivity.this)
+                                            .withTitle("Record permission")
+                                            .withMessage("Record permission is needed to authenticate using AudioQR")
+                                            .withButtonText(android.R.string.ok)
+                                            .withIcon(R.mipmap.ic_launcher)
+                                            .build();
+                        }
                     }
 
                     @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        PermissionListener dialogPermissionListener =
-                                DialogOnDeniedPermissionListener.Builder
-                                        .withContext(ListenActivity.this)
-                                        .withTitle("Record permission")
-                                        .withMessage("Record permission is needed to authenticate using AudioQR")
-                                        .withButtonText(android.R.string.ok)
-                                        .withIcon(R.mipmap.ic_launcher)
-                                        .build();
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
 
                     }
                 }).check();
+
             }
 
             @Override
@@ -104,6 +118,42 @@ public class ListenActivity extends AppCompatActivity {
         chirpSDK.stop();
     }
 
+
+    private void sendChirp() throws JSONException
+    {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("text", "123456");
+        Chirp chirp = new Chirp(jsonObject);
+        chirpSDK.create(chirp, new CallbackCreate() {
+            @Override
+            public void onCreateResponse(Chirp chirp) {
+                chirpSDK.chirp(chirp);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.clearAnimation();
+                                textView.setText("Waiting for Response");
+                            }
+                        },500);
+                        recordChirp();
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onCreateError(ChirpError chirpError) {
+                Log.d("ChirpError", "onCreateError: " + chirpError.getMessage());
+            }
+        });
+    }
+
+
     private void recordChirp() {
         chirpSDK.setListener(new ChirpSDKListener() {
 
@@ -115,7 +165,6 @@ public class ListenActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
                                 final String receivedText;
                                 try {
                                     receivedText = (String) chirp.getJsonData().get("text");
@@ -142,7 +191,6 @@ public class ListenActivity extends AppCompatActivity {
 
             @Override
             public void onChirpHearFailed() {
-                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
 
             }
@@ -151,7 +199,6 @@ public class ListenActivity extends AppCompatActivity {
             public void onChirpError(ChirpError chirpError) {
                 Log.d("ChirpError",chirpError.toString());
                 imageView.setVisibility(View.VISIBLE);
-                avLoadingIndicatorView.setVisibility(View.INVISIBLE);
             }
         });
         chirpSDK.start();
