@@ -24,7 +24,8 @@
         <activity
             android:name=".RegisterActivity"
             android:noHistory="true" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.Main"/>
         <activity android:name=".DoctorMainActivity" />
         <activity android:name=".ListenActivity"></activity>
     </application>
