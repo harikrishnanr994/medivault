@@ -28,6 +28,7 @@
             android:theme="@style/AppTheme.Main"/>
         <activity android:name=".DoctorMainActivity" />
         <activity android:name=".ListenActivity"></activity>
+        <activity android:name=".ProfileDetails"></activity>
     </application>
 
 </manifest>

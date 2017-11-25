@@ -22,4 +22,6 @@
     <string name="chirp_app_key">ZBH8vddyJdCwsezkwlxdduI0p</string>
     <string name="chirp_app_secret">mLlWM9tnIThgpoj8ugRkqeX2wI2ykXCBYDTIQCKEYGBe8GgMKN</string>
     <string name="title_activity_prescription_list">PrescriptionList</string>
+    <string name="font_bold_path">fonts/HelveticaNeueLt.ttf</string>
+
 </resources>

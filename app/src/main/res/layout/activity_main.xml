@@ -8,6 +8,7 @@
     tools:context="com.carehack.medivault.MainActivity"
     >
     <android.support.v7.widget.Toolbar
+            fontPath="@string/font_bold_path"
             android:id="@+id/toolbar"
             app:titleTextColor="#fff"
             android:layout_width="match_parent"
@@ -22,6 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
+        fontPath="@string/font_bold_path"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/navigation" />
 

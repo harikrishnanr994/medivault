@@ -10,23 +10,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.carehack.medivault.custom_font.MyTextView;
+
 
 /**
  * Created by Bineesh on 25/11/2017.
  */
 
 public class HomeFragment extends Fragment {
-    LinearLayout layout_edit;
+    MyTextView edit_profile_text;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        /*layout_edit = v.findViewById(R.id.edit_layout);
-        layout_edit.setOnClickListener(new View.OnClickListener() {
+        edit_profile_text = v.findViewById(R.id.edit_profile_text);
+        edit_profile_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(),RegisterActivity.class));
+                startActivity(new Intent(getActivity(),ProfileDetails.class));
             }
-        });*/
+        });
         return v;
     }
 }
