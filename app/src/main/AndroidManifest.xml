@@ -33,6 +33,7 @@
         <activity android:name=".ListenActivity" />
         <activity android:name=".EmitActivity"></activity>
         <activity android:name=".ProfileDetails"></activity>
+        <activity android:name=".DoctorAddActivity"></activity>
     </application>
 
 </manifest>
