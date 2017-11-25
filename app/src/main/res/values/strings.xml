@@ -4,7 +4,7 @@
     <string name="register">Register</string>
     <string name="login_desc">Enter your mobile number to get started</string>
     <string name="verification_text">Code</string>
-    <string name="action_sign_in_next">Next</string>
+    <string name="action_sign_in_next">Continue</string>
     <string name="register_desc">Enter your name and address which the item is to be dispatched.</string>
     <string name="action_register">Continue</string>
     <string name="edit_str">Edit</string>
