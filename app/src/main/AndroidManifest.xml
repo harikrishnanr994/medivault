@@ -34,7 +34,8 @@
         <activity android:name=".EmitActivity" />
         <activity android:name=".ProfileDetails" />
         <activity android:name=".DoctorAddActivity" />
-        <activity android:name=".ViewDetailsActivity"></activity>
+        <activity android:name=".ViewDetailsActivity" />
+        <activity android:name=".HospitalViewActivity"></activity>
     </application>
 
 </manifest>

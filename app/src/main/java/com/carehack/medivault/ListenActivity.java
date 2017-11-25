@@ -136,10 +136,9 @@ public class ListenActivity extends AppCompatActivity {
                             public void run() {
                                 startActivity(new Intent(ListenActivity.this,ViewDetailsActivity.class));
                             }
-                        },500);
+                        },3000);
                     }
                 });
-
 
             }
 
