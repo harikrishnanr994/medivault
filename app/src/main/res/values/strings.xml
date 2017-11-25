@@ -25,5 +25,6 @@
     <string name="font_bold_path">fonts/HelveticaNeueLt.ttf</string>
     <string name="disease_hint">Select the Disease.</string>
     <string name="prescription_hint">Enter the prescription.</string>
+    <string name="doctor_add_details">Submit</string>
 
 </resources>

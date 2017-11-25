@@ -15,15 +15,13 @@ import android.widget.Spinner;
 public class DoctorAddActivity extends AppCompatActivity {
 
     Button submit;
-    Spinner spinner;
+    com.jaredrummler.materialspinner.MaterialSpinner spinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_add);
 
-        spinner = (Spinner) findViewById(R.id.disease_select);
-        String[] objects = {"Fever","Headache","Body Pain","Throat pain","Back Pain"};
-        spinner.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,objects));
-
+        spinner = findViewById(R.id.disease_select);
+        spinner.setItems("Fever","Headache","Back pain", "Knee pain");
     }
 }
