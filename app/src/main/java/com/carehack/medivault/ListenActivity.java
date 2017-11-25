@@ -1,5 +1,6 @@
 package com.carehack.medivault;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -42,6 +48,8 @@ public class ListenActivity extends AppCompatActivity {
     ProgressBar progressBar;
     ImageView imageView;
     TextView textView;
+    private DatabaseReference mRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +58,7 @@ public class ListenActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         textView = findViewById(R.id.textview);
         imageView = findViewById(R.id.imageView);
+        mRef = FirebaseDatabase.getInstance().getReference();
         chirpSDK = new ChirpSDK(getApplicationContext(), getResources().getString(R.string.chirp_app_key), getResources().getString(R.string.chirp_app_secret), new ChirpSDKStatusListener() {
             @Override
             public void onAuthenticationSuccess() {
@@ -107,10 +116,12 @@ public class ListenActivity extends AppCompatActivity {
         chirpSDK.stop();
     }
 
-    private void sendChirp() throws JSONException
+    private void sendChirp(String receivedText) throws JSONException
     {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("text", "123456");
+        jsonObject.put("text", receivedText);
+        jsonObject.put("type", "Ack");
+
         Chirp chirp = new Chirp(jsonObject);
         chirpSDK.create(chirp, new CallbackCreate() {
             @Override
@@ -123,7 +134,7 @@ public class ListenActivity extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                textView.setText("Waiting for Response");
+                                startActivity(new Intent(ListenActivity.this,ViewDetailsActivity.class));
                             }
                         },500);
                     }
@@ -151,10 +162,35 @@ public class ListenActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 avLoadingIndicatorView.setVisibility(View.INVISIBLE);
-                                final String receivedText;
+                                final String receivedText,phone,type;
                                 try {
                                     receivedText = (String) chirp.getJsonData().get("text");
-                                    Toast.makeText(getApplicationContext(),receivedText,Toast.LENGTH_LONG).show();
+                                    phone = (String) chirp.getJsonData().get("phone");
+                                    type = (String) chirp.getJsonData().get("type");
+                                    if(type.equals("Req")) {
+                                        mRef.child("Shared Key").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                String key = dataSnapshot.getValue(String.class);
+                                                if (key != null) {
+                                                    if (key.equals(receivedText)) {
+                                                        try {
+                                                            sendChirp(receivedText);
+                                                        }
+                                                        catch (JSONException e)
+                                                        {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

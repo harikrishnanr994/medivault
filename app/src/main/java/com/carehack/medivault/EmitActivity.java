@@ -2,6 +2,7 @@ package com.carehack.medivault;
 
 import android.*;
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -45,9 +47,17 @@ public class EmitActivity extends AppCompatActivity {
     ProgressBar progressBar;
     ImageView imageView;
     TextView textView;
+    String shared_key,phone;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        shared_key = sharedPreferences.getString("sharedkey",null);
+        phone = sharedPreferences.getString("phone",null);
         setContentView(R.layout.activity_emit);
         progressBar = findViewById(R.id.progressbar);
         textView = findViewById(R.id.textview);
@@ -73,7 +83,9 @@ public class EmitActivity extends AppCompatActivity {
                                     try {
                                         Animation animation = AnimationUtils.loadAnimation(EmitActivity.this, R.anim.shake);
                                         imageView.setAnimation(animation);
+                                        imageView.setClickable(false);
                                         textView.setText("Sending Audio...");
+
                                         sendChirp();
                                     }catch (JSONException e)
                                     {
@@ -110,8 +122,6 @@ public class EmitActivity extends AppCompatActivity {
         });
     }
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -122,7 +132,9 @@ public class EmitActivity extends AppCompatActivity {
     private void sendChirp() throws JSONException
     {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("text", "123456");
+        jsonObject.put("text", shared_key);
+        jsonObject.put("type", "Req");
+        jsonObject.put("phone", phone);
         Chirp chirp = new Chirp(jsonObject);
         chirpSDK.create(chirp, new CallbackCreate() {
             @Override
@@ -156,7 +168,6 @@ public class EmitActivity extends AppCompatActivity {
 
     private void recordChirp() {
         chirpSDK.setListener(new ChirpSDKListener() {
-
             @Override
             public void onChirpHeard(final Chirp chirp) {
                 chirpSDK.read(chirp, new CallbackRead() {
@@ -165,10 +176,21 @@ public class EmitActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                final String receivedText;
+                                final String receivedText,type;
                                 try {
                                     receivedText = (String) chirp.getJsonData().get("text");
-                                    Toast.makeText(getApplicationContext(),receivedText,Toast.LENGTH_LONG).show();
+                                    type = (String) chirp.getJsonData().get("type");
+                                    if(receivedText.equals(shared_key) && type.equals("Ack")) {
+                                        SharedKeyManager sharedKeyManager = new SharedKeyManager(EmitActivity.this);
+                                        sharedKeyManager.assignNewSharedKey(phone);
+                                        Toast.makeText(getApplicationContext(), "Authentication Successful", Toast.LENGTH_LONG).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Invalid QR Code..Try Again", Toast.LENGTH_LONG).show();
+                                        textView.setText("Click on the button below to pair with device");
+                                        imageView.setClickable(true);
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

@@ -31,9 +31,10 @@
             android:theme="@style/AppTheme.Main" />
         <activity android:name=".DoctorMainActivity" />
         <activity android:name=".ListenActivity" />
-        <activity android:name=".EmitActivity"></activity>
-        <activity android:name=".ProfileDetails"></activity>
-        <activity android:name=".DoctorAddActivity"></activity>
+        <activity android:name=".EmitActivity" />
+        <activity android:name=".ProfileDetails" />
+        <activity android:name=".DoctorAddActivity" />
+        <activity android:name=".ViewDetailsActivity"></activity>
     </application>
 
 </manifest>

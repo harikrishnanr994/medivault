@@ -134,6 +134,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerDetails(final String name, final String dob, final String address ,final String height, final String weight , final String allergies) {
+        role = sharedPreferences.getString("uid", "");
+        phone = sharedPreferences.getString("phone", "");
         Map<String,String> map = new HashMap<>();
         map.put("Name",name);
         map.put("Address",address);
@@ -141,6 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
         map.put("Weight",weight);
         map.put("Height",height);
         map.put("Allergies",allergies);
+        map.put("Role",role);
         map.put("UID",uid);
 
         final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);

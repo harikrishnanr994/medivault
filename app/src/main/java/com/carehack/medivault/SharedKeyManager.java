@@ -1,5 +1,9 @@
 package com.carehack.medivault;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,10 +19,14 @@ public class SharedKeyManager {
     String sharedKey;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
-    public SharedKeyManager() {
+    public SharedKeyManager(Activity activity) {
         this.firebaseDatabase=FirebaseDatabase.getInstance();
         this.databaseReference=firebaseDatabase.getReference();
+        this.sharedPreferences = activity.getSharedPreferences(Utils.pref, Context.MODE_PRIVATE);
+        this.editor = sharedPreferences.edit();
     }
 
 
@@ -33,6 +41,8 @@ public class SharedKeyManager {
                     tempKey=Utils.randomSequenceGenerator(15);
                 }
                 databaseReference.child("Shared Key").child(phone).setValue(tempKey);
+                editor.putString("sharedkey",tempKey);
+                editor.commit();
             }
 
             @Override
