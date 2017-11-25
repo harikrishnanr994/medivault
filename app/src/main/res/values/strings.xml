@@ -26,5 +26,6 @@
     <string name="disease_hint">Select the Disease.</string>
     <string name="prescription_hint">Enter the prescription.</string>
     <string name="doctor_add_details">Submit</string>
+    <string name="title_activity_lab_report">LabReport</string>
 
 </resources>
