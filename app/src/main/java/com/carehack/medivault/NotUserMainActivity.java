@@ -63,7 +63,7 @@ public class NotUserMainActivity extends AppCompatActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(NotUserMainActivity.this , ListenActivity.class);
+            Intent intent = new Intent(NotUserMainActivity.this , DoctorMainActivity.class);
             intent.putExtra("phone","+91" + phone);
             startActivity(intent);
         }

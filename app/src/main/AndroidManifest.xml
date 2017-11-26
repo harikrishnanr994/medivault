@@ -44,8 +44,13 @@
         <activity
             android:name=".LabReport"
             android:theme="@style/AppTheme.Main" />
-        <activity android:name=".LaboratoryAddActivity"
-            android:theme="@style/AppTheme.Main"></activity>
+        <activity
+            android:name=".LaboratoryAddActivity"
+            android:theme="@style/AppTheme.Main" />
+        <activity android:name=".DoctorViewHospitalActivity" />
+        <activity android:name=".DoctorMainActivity" />
+        <activity android:name=".DoctorViewLapReportActivity"></activity>
+        <activity android:name=".AddLabReport"/>
     </application>
 
 </manifest>
