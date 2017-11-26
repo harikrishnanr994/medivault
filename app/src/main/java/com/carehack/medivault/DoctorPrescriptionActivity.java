@@ -72,19 +72,15 @@ public class DoctorPrescriptionActivity extends AppCompatActivity {
                         progressDialog.setTitle("Saving");
                         progressDialog.show();
                         String disease = spinner.getItems().get(spinner.getSelectedIndex()).toString();
+                        String pre = editText.getText().toString();
                         Map<String,String> map = new HashMap<>();
                         map.put("Disease",disease);
-                        mRef.child("Hospital Records").child(phone).push().setValue(map, new DatabaseReference.CompletionListener() {
+                        map.put("Prescriptions",pre);
+                        mRef.child("Prescriptions").child(phone).push().setValue(map, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                String pre = editText.getText().toString();
-                                mRef.child("Prescriptions").child(phone).push().child("Prescriptions").setValue(pre, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        progressDialog.dismiss();
-                                        finish();
-                                    }
-                                });
+                                progressDialog.dismiss();
+                                finish();
                             }
                         });
                     }

@@ -25,7 +25,7 @@ public class DoctorMainActivity extends AppCompatActivity {
 
     MyTextView name_txt,dob_txt,height_txt,weight_txt;
 
-    CardView connect,hospital,card_view_prescription,lab_report;
+    CardView hospital,card_view_prescription,lab_report;
     String phone;
 
     @Override
@@ -48,10 +48,17 @@ public class DoctorMainActivity extends AppCompatActivity {
         dob_txt.setText(dob);
         height_txt.setText(height);
         weight_txt.setText(weight);
-        connect = findViewById(R.id.card_view_connect);
+        card_view_prescription = findViewById(R.id.card_view_prescription);
         hospital = findViewById(R.id.card_view_hospital);
         lab_report = findViewById(R.id.card_view_lab_report);
-        card_view_prescription = findViewById(R.id.card_view_prescription);
+        card_view_prescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DoctorMainActivity.this,DoctorViewPrescriptionActivity.class);
+                intent.putExtra("phone",phone);
+                startActivity(intent);
+            }
+        });
         hospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

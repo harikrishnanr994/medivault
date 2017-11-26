@@ -50,6 +50,7 @@
         <activity android:name=".DoctorViewHospitalActivity" />
         <activity android:name=".DoctorMainActivity" />
         <activity android:name=".DoctorViewLapReportActivity"></activity>
+        <activity android:name=".DoctorViewPrescriptionActivity"/>
         <activity android:name=".AddLabReport"/>
     </application>
 

@@ -2,9 +2,9 @@ package com.carehack.medivault;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoctorViewLapReportActivity extends AppCompatActivity {
+public class DoctorViewPrescriptionActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    LabReportsRVAdapter hospitalAdapter;
-    ArrayList<DataClass> reportList = new ArrayList<>();
+    HospitalAdapter hospitalAdapter;
+    List<DataClass> reportList = new ArrayList<>();
     FloatingActionButton floatingActionButton;
     private DatabaseReference mRef;
     private SharedPreferences sharedPreferences;
@@ -37,7 +37,7 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_doctor_view_lap_report);
+        setContentView(R.layout.activity_view_reports);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         phone = getIntent().getStringExtra("phone");
@@ -49,28 +49,36 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
         textView = findViewById(R.id.textview);
         mRef = FirebaseDatabase.getInstance().getReference();
 
-        hospitalAdapter = new LabReportsRVAdapter(reportList);
+        hospitalAdapter = new HospitalAdapter(reportList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hospitalAdapter);
         prepareData();
+        floatingActionButton = findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DoctorViewPrescriptionActivity.this,DoctorPrescriptionActivity.class);
+                intent.putExtra("phone",phone);
+                startActivity(intent);
+            }
+        });
     }
 
     private void prepareData() {
-        mRef.child("Lab Reports").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("Prescriptions").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot postDataSnapshot : dataSnapshot.getChildren())
                 {
-                    String name = postDataSnapshot.child("Name").getValue(String.class);
-                    String date = postDataSnapshot.child("Date").getValue(String.class);
+                    String name = postDataSnapshot.child("Disease").getValue(String.class);
                     DataClass dataClass = new DataClass();
-                    dataClass.setDate(date);
                     dataClass.setTitle(name);
                     reportList.add(dataClass);
                 }
                 progressBar.setVisibility(View.GONE);
+                floatingActionButton.setVisibility(View.VISIBLE);
                 if(reportList.size()!=0)
                 {
                     recyclerView.setVisibility(View.VISIBLE);
