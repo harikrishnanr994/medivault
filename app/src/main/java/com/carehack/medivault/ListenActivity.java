@@ -48,7 +48,6 @@ public class ListenActivity extends AppCompatActivity {
     TextView textView;
     private DatabaseReference mRef;
     String name,phone_intent,role;
-
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     @Override

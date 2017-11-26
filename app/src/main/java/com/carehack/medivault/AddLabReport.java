@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,6 +42,10 @@ public class AddLabReport extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_lab_report);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Lab Reports");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         options=new ArrayList<>();
         options.add("<Select Data>");
@@ -148,5 +153,16 @@ public class AddLabReport extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+       /* finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        /*finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
     }
 }
