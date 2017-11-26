@@ -25,15 +25,18 @@ public class DoctorMainActivity extends AppCompatActivity {
 
     MyTextView name_txt,dob_txt,height_txt,weight_txt;
 
-    CardView connect,hospital,card_view_prescription;
+    CardView connect,hospital,card_view_prescription,lab_report;
+    String phone;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_doctor_auth_main);
         name_txt = findViewById(R.id.name);
         dob_txt = findViewById(R.id.dob);
         height_txt = findViewById(R.id.height);
         weight_txt = findViewById(R.id.weight);
+        phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref,MODE_PRIVATE);
         editor = sharedPreferences.edit();
         String name = sharedPreferences.getString("name","");
@@ -47,17 +50,22 @@ public class DoctorMainActivity extends AppCompatActivity {
         weight_txt.setText(weight);
         connect = findViewById(R.id.card_view_connect);
         hospital = findViewById(R.id.card_view_hospital);
+        lab_report = findViewById(R.id.card_view_lab_report);
         card_view_prescription = findViewById(R.id.card_view_prescription);
         hospital.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DoctorMainActivity.this,HospitalViewActivity.class));
+                Intent intent = new Intent(DoctorMainActivity.this,DoctorViewHospitalActivity.class);
+                intent.putExtra("phone",phone);
+                startActivity(intent);
             }
         });
-        card_view_prescription.setOnClickListener(new View.OnClickListener() {
+        lab_report.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                startActivity(new Intent(DoctorMainActivity.this,PrescriptionReport.class));
+            public void onClick(View v) {
+                Intent intent = new Intent(DoctorMainActivity.this,DoctorViewLapReportActivity.class);
+                intent.putExtra("phone",phone);
+                startActivity(intent);
             }
         });
     }
