@@ -46,9 +46,9 @@ public class DoctorPrescriptionActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         mRef = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.activity_doctor_add);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Add report");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Add report");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         btn_submit = findViewById(R.id.btn_submit);
         setSupportActionBar(toolbar);
         spinner = findViewById(R.id.disease_select);

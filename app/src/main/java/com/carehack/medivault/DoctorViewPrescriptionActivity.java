@@ -39,9 +39,8 @@ public class DoctorViewPrescriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_reports);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Prescriptions");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Prescriptions");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();

@@ -39,8 +39,8 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_view_lap_report);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Lab Report");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Lab Report");
         phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();

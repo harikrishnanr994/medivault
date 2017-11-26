@@ -43,9 +43,8 @@ public class DoctorViewHospitalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_reports);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Doctors");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Doctors");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
@@ -62,15 +61,6 @@ public class DoctorViewHospitalActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hospitalAdapter);
         prepareData();
-        floatingActionButton = findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DoctorViewHospitalActivity.this,DoctorPrescriptionActivity.class);
-                intent.putExtra("phone",phone);
-                startActivity(intent);
-            }
-        });
     }
 
     private void prepareData() {
@@ -85,7 +75,6 @@ public class DoctorViewHospitalActivity extends AppCompatActivity {
                     reportList.add(dataClass);
                 }
                 progressBar.setVisibility(View.GONE);
-                floatingActionButton.setVisibility(View.VISIBLE);
                 if(reportList.size()!=0)
                 {
                     recyclerView.setVisibility(View.VISIBLE);
