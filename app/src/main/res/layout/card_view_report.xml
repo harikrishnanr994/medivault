@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="72dp"
@@ -69,11 +70,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_calendar"
-            app:layout_constraintRight_toLeftOf="@+id/dateqfrr"
+            app:layout_constraintRight_toLeftOf="@+id/date"
             android:layout_marginRight="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="10dp"
-            />
+            tools:ignore="VectorDrawableCompat" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
