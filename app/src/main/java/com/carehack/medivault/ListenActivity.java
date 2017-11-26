@@ -47,7 +47,7 @@ public class ListenActivity extends AppCompatActivity {
     ImageView imageView;
     TextView textView;
     private DatabaseReference mRef;
-    String name,phone_intent;
+    String name,phone_intent,role;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -57,6 +57,7 @@ public class ListenActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         name = sharedPreferences.getString("name","");
+        role = sharedPreferences.getString("role","");
         phone_intent = getIntent().getStringExtra("phone");
         setContentView(R.layout.activity_listen);
         avLoadingIndicatorView = findViewById(R.id.avi);
@@ -134,26 +135,45 @@ public class ListenActivity extends AppCompatActivity {
             @Override
             public void onCreateResponse(Chirp chirp) {
                 chirpSDK.chirp(chirp);
+
                 mRef.child("Users").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        final Map<String,String> map = new HashMap<>();
-                        map.put("Lab Name",name);
-                        map.put("Name", dataSnapshot.child("Name").getValue(String.class));
-                        mRef.child("Pending Reports").child("By Phone").child(phone).push().setValue(map, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                map.put("Phone",phone);
-                                map.remove("Lab Name");
-                                mRef.child("Pending Reports").child("By Name").child(name).push().setValue(map, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        startActivity(new Intent(ListenActivity.this,ViewPendingReportsActivity.class));
-                                    }
-                                });
-                            }
-                        });
-                    }
+                        if(role.equals("Laboratory"))
+                        {
+                            final Map<String, String> map = new HashMap<>();
+                            map.put("Lab Name", name);
+                            map.put("Name", dataSnapshot.child("Name").getValue(String.class));
+                            mRef.child("Pending Reports").child("By Phone").child(phone).push().setValue(map, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    map.put("Phone", phone);
+                                    map.remove("Lab Name");
+                                    mRef.child("Pending Reports").child("By Name").child(name).push().setValue(map, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                            startActivity(new Intent(ListenActivity.this, ViewPendingReportsActivity.class));
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else if(role.equals("Doctor"))
+                        {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            startActivity(new Intent(ListenActivity.this, DoctorPrescriptionActivity.class));
+                                        }
+                                    },2000);
+                                }
+                            });
+                        }
+                }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {

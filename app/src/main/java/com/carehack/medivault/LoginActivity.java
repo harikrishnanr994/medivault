@@ -228,7 +228,9 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(final DataSnapshot dataSnapshot) {
                                         final String role = dataSnapshot.child("Role").getValue(String.class);
+                                        final String name = dataSnapshot.child("Name").getValue(String.class);
                                         editor.putString("phone", user.getPhoneNumber());
+                                        editor.putString("name", name);
                                         editor.putString("uid", user.getUid());
                                         editor.putString("role", role);
                                         editor.commit();
