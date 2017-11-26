@@ -180,8 +180,14 @@ public class ListenActivity extends AppCompatActivity {
                         }
                     });
                 }
-                else
-                    finish();
+                else {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                        }
+                    }, 2000);                }
 
             }
 
