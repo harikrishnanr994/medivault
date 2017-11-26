@@ -41,7 +41,11 @@
         <activity
             android:name=".PrescriptionReport"
             android:theme="@style/AppTheme.Main" />
-        <activity android:name=".LaboratoryAddActivity"></activity>
+        <activity
+            android:name=".LabReport"
+            android:theme="@style/AppTheme.Main" />
+        <activity android:name=".LaboratoryAddActivity"
+            android:theme="@style/AppTheme.Main"></activity>
     </application>
 
 </manifest>

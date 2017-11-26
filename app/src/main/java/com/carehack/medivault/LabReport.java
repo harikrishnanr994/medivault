@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -22,13 +23,16 @@ public class LabReport extends AppCompatActivity {
     private ArrayList<DataClass> labReports;
     private RecyclerView labReportRV;
     private RecyclerView.Adapter labReportsAdapter;
+    private SlidingUpPanelLayout mLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_lab_report);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        mLayout = findViewById(R.id.sliding_layout);
         setSupportActionBar(toolbar);
         labReports=new ArrayList<>();
         firebase=FirebaseDatabase.getInstance();
@@ -42,10 +46,21 @@ public class LabReport extends AppCompatActivity {
         labReports.get(1).setTitle("Aerys Clinic");
         labReports.get(1).setDate("2-11-2017");
 
-        labReportRV=findViewById(R.id.labReportRV);
+        labReportRV=findViewById(R.id.recyclerview);
         labReportRV.setLayoutManager(new LinearLayoutManager(LabReport.this));
         labReportsAdapter=new LabReportsRVAdapter(labReports);
         labReportRV.setAdapter(labReportsAdapter);
+
+        labReportRV.addOnItemTouchListener(new RecyclerItemClickListener(this, labReportRV, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+            }
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
     }
 
 }
