@@ -276,7 +276,9 @@ public class LoginActivity extends AppCompatActivity {
         {
             Log.d("Role",role);
             if(role.equals("Doctor"))
-                startActivity(new Intent(LoginActivity.this,DoctorMainActivity.class));
+                startActivity(new Intent(LoginActivity.this,NotUserMainActivity.class));
+            else if(role.equals("Laboratory"))
+                startActivity(new Intent(LoginActivity.this,ViewPendingReportsActivity.class));
             else if(role.equals("User")) {
                 if(sharedPreferences.contains("address")) {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));

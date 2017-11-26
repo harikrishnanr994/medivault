@@ -1,9 +1,8 @@
 package com.carehack.medivault;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,12 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -32,7 +29,8 @@ import com.wang.avi.AVLoadingIndicatorView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.chirp.sdk.CallbackCreate;
 import io.chirp.sdk.CallbackRead;
@@ -49,10 +47,17 @@ public class ListenActivity extends AppCompatActivity {
     ImageView imageView;
     TextView textView;
     private DatabaseReference mRef;
+    String name,phone_intent;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        name = sharedPreferences.getString("name","");
+        phone_intent = getIntent().getStringExtra("phone");
         setContentView(R.layout.activity_listen);
         avLoadingIndicatorView = findViewById(R.id.avi);
         progressBar = findViewById(R.id.progressbar);
@@ -116,27 +121,43 @@ public class ListenActivity extends AppCompatActivity {
         chirpSDK.stop();
     }
 
-    private void sendChirp(String receivedText) throws JSONException
+    private void sendChirp(String receivedText, final String phone , final String message) throws JSONException
     {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("text", receivedText);
+        jsonObject.put("phone", phone);
         jsonObject.put("type", "Ack");
+        jsonObject.put("message", message);
 
         Chirp chirp = new Chirp(jsonObject);
         chirpSDK.create(chirp, new CallbackCreate() {
             @Override
             public void onCreateResponse(Chirp chirp) {
                 chirpSDK.chirp(chirp);
-                runOnUiThread(new Runnable() {
+                mRef.child("Users").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void run() {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final Map<String,String> map = new HashMap<>();
+                        map.put("Lab Name",name);
+                        map.put("Name", dataSnapshot.child("Name").getValue(String.class));
+                        mRef.child("Pending Reports").child("By Phone").child(phone).push().setValue(map, new DatabaseReference.CompletionListener() {
                             @Override
-                            public void run() {
-                                startActivity(new Intent(ListenActivity.this,ViewDetailsActivity.class));
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                map.put("Phone",phone);
+                                map.remove("Lab Name");
+                                mRef.child("Pending Reports").child("By Name").child(name).push().setValue(map, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        startActivity(new Intent(ListenActivity.this,ViewPendingReportsActivity.class));
+                                    }
+                                });
                             }
-                        },3000);
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
 
@@ -170,6 +191,9 @@ public class ListenActivity extends AppCompatActivity {
                                     Log.d("Phone",phone);
                                     Log.d("Type",type);
 
+                                    if(phone_intent.equals(phone))
+                                    {
+
                                     if(type.equals("Req")) {
                                         mRef.child("Shared Key").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
@@ -178,10 +202,8 @@ public class ListenActivity extends AppCompatActivity {
                                                 if (key != null) {
                                                     if (key.equals(receivedText)) {
                                                         try {
-                                                            sendChirp(receivedText);
-                                                        }
-                                                        catch (JSONException e)
-                                                        {
+                                                            sendChirp(receivedText, phone,"Success");
+                                                        } catch (JSONException e) {
                                                             e.printStackTrace();
                                                         }
                                                     }
@@ -193,6 +215,11 @@ public class ListenActivity extends AppCompatActivity {
 
                                             }
                                         });
+                                    }
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Invalid Phone Number", Toast.LENGTH_LONG).show();
+                                        sendChirp(receivedText, phone , "Invalid Phone Number");
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

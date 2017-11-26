@@ -28,12 +28,12 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.Main" />
-        <activity android:name=".DoctorMainActivity" />
+        <activity android:name=".NotUserMainActivity" />
         <activity android:name=".ListenActivity" />
         <activity android:name=".EmitActivity" />
         <activity android:name=".ProfileDetails" />
-        <activity android:name=".DoctorAddActivity" />
-        <activity android:name=".ViewDetailsActivity" />
+        <activity android:name=".DoctorPrescriptionActivity" />
+        <activity android:name=".ViewPendingReportsActivity" />
         <activity android:name=".HospitalViewActivity"
             android:theme="@style/AppTheme.Main"></activity>
         <activity android:name=".PrescriptionReport"

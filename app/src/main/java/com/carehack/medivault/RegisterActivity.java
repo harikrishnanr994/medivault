@@ -134,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerDetails(final String name, final String dob, final String address ,final String height, final String weight , final String allergies) {
-        role = sharedPreferences.getString("uid", "");
+        role = sharedPreferences.getString("role", "");
         phone = sharedPreferences.getString("phone", "");
         Map<String,String> map = new HashMap<>();
         map.put("Name",name);
