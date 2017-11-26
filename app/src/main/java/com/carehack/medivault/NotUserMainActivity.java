@@ -26,6 +26,7 @@ public class NotUserMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_doctor_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
         mPhoneView = findViewById(R.id.edit_text_phone_number);
         submit = findViewById(R.id.btn_next);
         submit.setOnClickListener(new View.OnClickListener() {
