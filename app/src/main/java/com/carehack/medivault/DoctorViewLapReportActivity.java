@@ -41,7 +41,6 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Lab Report");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -65,10 +64,8 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot postDataSnapshot : dataSnapshot.getChildren())
                 {
-                    String name = postDataSnapshot.child("Name").getValue(String.class);
-                    String date = postDataSnapshot.child("Date").getValue(String.class);
+                    String name = postDataSnapshot.child("Report").getValue(String.class);
                     DataClass dataClass = new DataClass();
-                    dataClass.setDate(date);
                     dataClass.setTitle(name);
                     reportList.add(dataClass);
                 }
@@ -89,16 +86,5 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
 
             }
         });
-    }
-    @Override
-    public boolean onSupportNavigateUp(){
-       /* finish();
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
-        /*finish();
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
     }
 }

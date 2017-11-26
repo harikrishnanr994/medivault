@@ -22,7 +22,7 @@ public class LabReportsRVAdapter extends RecyclerView.Adapter<LabReportsRVAdapte
     ArrayList<DataClass> data;
     @Override
     public LabReportsRVAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.card_lab_view_report,parent, false);
+        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.card_lab_pending_report,parent, false);
 
         return new MyViewHolder(v);
     }
@@ -30,7 +30,6 @@ public class LabReportsRVAdapter extends RecyclerView.Adapter<LabReportsRVAdapte
     @Override
     public void onBindViewHolder(LabReportsRVAdapter.MyViewHolder holder, int position) {
 
-            holder.dateTV.setText(data.get(position).getDate());
             holder.labNameTV.setText(data.get(position).getTitle());
     }
 
@@ -41,11 +40,10 @@ public class LabReportsRVAdapter extends RecyclerView.Adapter<LabReportsRVAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView labNameTV, dateTV;
+        TextView labNameTV;
         public MyViewHolder(View itemView) {
             super(itemView);
-            labNameTV=itemView.findViewById(R.id.course_name);
-            dateTV=itemView.findViewById(R.id.duration);
+            labNameTV=itemView.findViewById(R.id.title);
         }
     }
 }

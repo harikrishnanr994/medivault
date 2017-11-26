@@ -98,15 +98,5 @@ public class DoctorPrescriptionActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
-    public boolean onSupportNavigateUp(){
-        /*finish();
-        startActivity(new Intent(getApplicationContext(),Doct.class)); */
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
-        /*finish();
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
-    }
+
 }

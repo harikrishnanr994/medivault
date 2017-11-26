@@ -48,7 +48,6 @@ public class ViewPendingReportsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Pending Records");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -152,16 +151,5 @@ public class ViewPendingReportsActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
 
-    }
-    @Override
-    public boolean onSupportNavigateUp(){
-        /*finish();
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
-        return true;
-    }
-    @Override
-    public void onBackPressed() {
-        /*finish();
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
     }
 }
