@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class PendingFragment extends Fragment {
         mRef.child("Pending Reports").child("By Phone").child(phone).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("DS",dataSnapshot.toString());
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
                     String lab_name = postSnapshot.child("Lab Name").getValue(String.class);

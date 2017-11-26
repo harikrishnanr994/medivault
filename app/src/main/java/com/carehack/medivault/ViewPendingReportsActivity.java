@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -57,7 +58,7 @@ public class ViewPendingReportsActivity extends AppCompatActivity {
         textView = findViewById(R.id.textview);
         mRef = FirebaseDatabase.getInstance().getReference();
 
-        pendingReportAdapter = new PendingReportAdapter(reportList);
+        pendingReportAdapter = new PendingReportAdapter(reportList,ViewPendingReportsActivity.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -135,10 +136,15 @@ public class ViewPendingReportsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             super.onActivityResult(requestCode, resultCode, data);
+            Log.d("ACTIVITY_RESULT","DONE");
+            Log.d("REQ",requestCode+"");
+            Log.d("RES",resultCode+"");
 
             if (requestCode == REQUEST_CODE  && resultCode  == RESULT_OK) {
+                Log.d("ACTIVITY","Correct");
                 DataClass dataClass = (DataClass) data.getSerializableExtra("data");
                 reportList.remove(dataClass);
+                Log.d("reportlist_SIZE",reportList.size()+"");
                 pendingReportAdapter.notifyDataSetChanged();
             }
         } catch (Exception ex) {

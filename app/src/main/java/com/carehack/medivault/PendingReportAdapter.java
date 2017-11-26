@@ -1,5 +1,6 @@
 package com.carehack.medivault;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,8 @@ import java.util.List;
 public class PendingReportAdapter extends RecyclerView.Adapter<PendingReportAdapter.MyViewHolder> {
 
     private List<DataClass> reportList;
+    Activity activity;
+    public static final int REQUEST_CODE = 1;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, subtitle, date;
@@ -32,14 +35,15 @@ public class PendingReportAdapter extends RecyclerView.Adapter<PendingReportAdap
                     DataClass dataClass = reportList.get(getLayoutPosition());
                     Intent intent = new Intent(v.getContext(),AddLabReport.class);
                     intent.putExtra("data",dataClass);
-                    v.getContext().startActivity(intent);
+                    activity.startActivityForResult(intent,REQUEST_CODE);
                 }
             });
         }
     }
 
 
-    public PendingReportAdapter(List<DataClass> reportList) {
+    public PendingReportAdapter(List<DataClass> reportList, Activity activity) {
+        this.activity = activity;
         this.reportList = reportList;
     }
 

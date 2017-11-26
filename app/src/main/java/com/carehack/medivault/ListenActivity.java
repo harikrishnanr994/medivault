@@ -180,13 +180,20 @@ public class ListenActivity extends AppCompatActivity {
                     });
                 }
                 else {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            finish();
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    finish();
+                                }
+                            }, 2500);
                         }
-                    }, 2000);                }
+                    });
+
+                }
 
             }
 
