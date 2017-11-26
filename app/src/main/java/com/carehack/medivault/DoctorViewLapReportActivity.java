@@ -40,6 +40,8 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_doctor_view_lap_report);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Lab Report");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -88,5 +90,15 @@ public class DoctorViewLapReportActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    public boolean onSupportNavigateUp(){
+       /* finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        /*finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
+    }
 }

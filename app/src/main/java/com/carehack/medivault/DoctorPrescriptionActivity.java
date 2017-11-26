@@ -46,8 +46,9 @@ public class DoctorPrescriptionActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         mRef = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.activity_doctor_add);
-        toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Add Report");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Add report");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         btn_submit = findViewById(R.id.btn_submit);
         setSupportActionBar(toolbar);
         spinner = findViewById(R.id.disease_select);
@@ -96,5 +97,16 @@ public class DoctorPrescriptionActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        /*finish();
+        startActivity(new Intent(getApplicationContext(),Doct.class)); */
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        /*finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
     }
 }

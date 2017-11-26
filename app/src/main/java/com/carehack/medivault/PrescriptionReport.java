@@ -43,6 +43,8 @@ public class PrescriptionReport extends AppCompatActivity {
         setContentView(R.layout.activity_doctor_view_lap_report);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Lab Records");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         phone = sharedPreferences.getString("phone","");
         editor = sharedPreferences.edit();
@@ -88,5 +90,16 @@ public class PrescriptionReport extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
     }
 }

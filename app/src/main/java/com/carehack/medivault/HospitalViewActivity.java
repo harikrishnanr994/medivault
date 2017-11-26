@@ -1,5 +1,6 @@
 package com.carehack.medivault;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,13 +22,14 @@ public class HospitalViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hospital_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Hospital Records");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         recyclerView =  findViewById(R.id.recyclerview);
         hospitalAdapter = new HospitalAdapter(hospitalList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hospitalAdapter);
-
         prepareDummyData();
     }
 
@@ -57,5 +59,16 @@ public class HospitalViewActivity extends AppCompatActivity {
         DataClass dataclass8 = new DataClass("Govt Medical college","Dr.Manu","01-05-2017");
         hospitalList.add(dataclass8);
         hospitalAdapter.notifyDataSetChanged();
+    }
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
     }
 }

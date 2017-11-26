@@ -44,6 +44,9 @@ public class DoctorViewHospitalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_reports);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Doctors");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         phone = getIntent().getStringExtra("phone");
         sharedPreferences = getSharedPreferences(Utils.pref, MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -100,5 +103,15 @@ public class DoctorViewHospitalActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    public boolean onSupportNavigateUp(){
+       /* finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        /*finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));*/
+    }
 }

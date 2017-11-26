@@ -1,5 +1,6 @@
 package com.carehack.medivault;
 
+import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,9 +30,11 @@ public class LabReport extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_lab_report);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Lab Records");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mLayout = findViewById(R.id.sliding_layout);
         setSupportActionBar(toolbar);
         labReports=new ArrayList<>();
@@ -62,5 +65,15 @@ public class LabReport extends AppCompatActivity {
             }
         }));
     }
-
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+    }
 }

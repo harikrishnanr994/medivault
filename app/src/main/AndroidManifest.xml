@@ -25,7 +25,8 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:theme="@style/AppTheme.Main"/>
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.Main" />
@@ -48,7 +49,8 @@
             android:name=".LaboratoryAddActivity"
             android:theme="@style/AppTheme.Main" />
         <activity android:name=".DoctorViewHospitalActivity" />
-        <activity android:name=".DoctorMainActivity" />
+        <activity android:name=".DoctorMainActivity"
+            android:theme="@style/AppTheme.Main"/>
         <activity android:name=".DoctorViewLapReportActivity"></activity>
         <activity android:name=".DoctorViewPrescriptionActivity"/>
         <activity android:name=".AddLabReport"/>

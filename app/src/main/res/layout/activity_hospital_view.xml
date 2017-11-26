@@ -7,10 +7,12 @@
     tools:context="com.carehack.medivault.HospitalViewActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorAccent"
         app:titleTextColor="#fff"
+        app:popupTheme="@style/AppTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
