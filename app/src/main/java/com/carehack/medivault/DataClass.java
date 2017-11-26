@@ -7,7 +7,19 @@ import java.io.Serializable;
  */
 
 public class DataClass implements Serializable{
-    private String title,subtitle,date;
+    private String title;
+    private String subtitle;
+    private String date;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    private String content;
 
     public DataClass() {
     }
