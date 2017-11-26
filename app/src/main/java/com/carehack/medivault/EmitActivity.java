@@ -196,6 +196,7 @@ public class EmitActivity extends AppCompatActivity {
                                         else
                                         {
                                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                            finish();
                                         }
                                     }
                                     else
