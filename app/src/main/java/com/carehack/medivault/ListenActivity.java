@@ -167,7 +167,9 @@ public class ListenActivity extends AppCompatActivity {
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            startActivity(new Intent(ListenActivity.this, DoctorPrescriptionActivity.class));
+                                            Intent intent = new Intent(ListenActivity.this , DoctorPrescriptionActivity.class);
+                                            intent.putExtra("phone" , phone);
+                                            startActivity(intent);
                                         }
                                     },2000);
                                 }
