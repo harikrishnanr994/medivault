@@ -24,6 +24,12 @@ public class DataClass implements Serializable{
     public DataClass() {
     }
 
+    public DataClass(String title,String subtitle,String date) {
+        this.title=title;
+        this.subtitle = subtitle;
+        this.date=date;
+    }
+
     public String getTitle() {
         return title;
     }
