@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +38,8 @@ public class ViewPendingReportsActivity extends AppCompatActivity {
     ProgressBar progressBar;
     TextView textView;
     String name;
+    public static final int REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,5 +127,22 @@ public class ViewPendingReportsActivity extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == REQUEST_CODE  && resultCode  == RESULT_OK) {
+                DataClass dataClass = (DataClass) data.getSerializableExtra("data");
+                reportList.remove(dataClass);
+                pendingReportAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception ex) {
+            Toast.makeText(ViewPendingReportsActivity.this, ex.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

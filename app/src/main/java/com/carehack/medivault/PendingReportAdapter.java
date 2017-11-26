@@ -30,7 +30,7 @@ public class PendingReportAdapter extends RecyclerView.Adapter<PendingReportAdap
                 @Override
                 public void onClick(View v) {
                     DataClass dataClass = reportList.get(getLayoutPosition());
-                    Intent intent = new Intent(v.getContext(),LaboratoryAddActivity.class);
+                    Intent intent = new Intent(v.getContext(),AddLabReport.class);
                     intent.putExtra("data",dataClass);
                     v.getContext().startActivity(intent);
                 }
